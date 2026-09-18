@@ -1,5 +1,8 @@
-### [Nombre del juego]
+### \[Chads Vs Normies]
 
-* Integrante 1
-* Integrante 2
-* Etc...
+* Gabriel Gomez
+* Alberto Martin Gonzales
+* Jeremías Luna
+* Lautaro Wietrzykowski
+* Camilo Sosa
+
