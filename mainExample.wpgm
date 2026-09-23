@@ -1,23 +1,29 @@
 import wollok.game.*
 
+import planta.*
+import tablero.*
 import example.pepita
 
-program PepitaGame {
-	game.title("Pepita")
-	game.height(10)
+program Game {
+	game.title("Chad spaceforce")
+	game.height(9)
 	game.width(10)
     game.cellSize(50)
-	// add assets in asset folder, for example, for the background
-    // game.boardGround("fondo2.jpg")
+	
+	var zombie = null
+	
+	//aparece un zombie random cuando pasen 2 segundos(por ahora se implementa asi nomas ya que para usar tick hay que instanciar nuevos zombies)
+	
+	game.schedule(2000,{zombie = spawner.spawnearZombie()})
+	
 
-	//
+	//el zombie se mueve cada segundo
+		
+	const tick = game.tick(1000,{zombie.mover()},false)
+	tick.start()
 
-	// game.showAttributes(0) //Debug
-	game.addVisual(tumama)
+	
+
+
 	game.start()
-}
-
-object tumama {
-  var property position = game.at(5,5)
-  method image() = "pepita.jpg"
 }
