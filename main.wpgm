@@ -1,0 +1,34 @@
+import wollok.game.*
+import tablero.*
+import chads.*
+import normies.*
+
+program ChadsVsNormies {
+  game.title("Chads vs Normies")
+  game.width(13)
+  game.height(6)
+  game.cellSize(60)
+  game.boardGround("Patiochadfinal.png")
+
+  game.addVisual(carta)
+  invasion.agregar(new Normie(position = game.at(12, 2)))
+
+  game.onClickDo({ posicion =>
+    if (posicion.y() == 5 && posicion.x() == 3) {
+      seleccion.elegirMuro()
+    } else if (posicion.x() >= 3 && posicion.x() <= 11 && posicion.y() <= 4) {
+      seleccion.plantarEn(posicion)
+    }
+  })
+
+  game.onTick(1000, "avanzarNormies", {
+    invasion.todos().forEach({ normie => normie.avanzar() })
+    escenario.reordenar()
+  })
+
+  game.onTick(1000, "atacarNormies", {
+    invasion.todos().forEach({ normie => normie.atacar() })
+  })
+
+  game.start()
+}
