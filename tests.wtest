@@ -4,35 +4,35 @@ import tablero.*
 
 describe "Chad Muro" {
   test "Empieza con 200 de vida" {
-    const muro = new ChadMuro(position = game.at(0, 0))
+    const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
     assert.equals(200, muro.vida())
   }
 
   test "Recibir 5 veces 10 de daño reduce su vida a 150" {
-    const muro = new ChadMuro(position = game.at(0, 0))
+    const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
     muro.recibirDanio(50)
     assert.equals(150, muro.vida())
   }
 
   test "Con vida completa se ve sano" {
-    const muro = new ChadMuro(position = game.at(0, 0))
+    const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
     assert.equals("murachadfase1.png", muro.image())
   }
 
   test "A mitad de vida se ve dañado" {
-    const muro = new ChadMuro(position = game.at(0, 0))
+   const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
     muro.recibirDanio(70)
     assert.equals("murachadfase2.png", muro.image())
   }
 
   test "Con poca vida se ve crítico" {
-    const muro = new ChadMuro(position = game.at(0, 0))
+    const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
     muro.recibirDanio(140)
     assert.equals("murachadfase3.png", muro.image())
   }
 
   test "Sin vida se considera muerto y se saca del jardín" {
-    const muro = new ChadMuro(position = game.at(8, 3))
+    const muro = new ChadMuro(position = game.at(8, 3), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
     muro.recibirDanio(200)
     assert.that(muro.estaMuerto())
@@ -48,7 +48,7 @@ describe "Normie" {
   }
 
   test "Se frena si hay un Chad vivo adelante" {
-    const muro = new ChadMuro(position = game.at(4, 2))
+    const muro = new ChadMuro(position = game.at(4, 2), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
     const normie = new Normie(position = game.at(5, 2))
     normie.avanzar()
@@ -57,7 +57,7 @@ describe "Normie" {
   }
 
   test "Ataca al Chad que tiene enfrente" {
-    const muro = new ChadMuro(position = game.at(4, 3))
+    const muro = new ChadMuro(position = game.at(4, 3), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
     const normie = new Normie(position = game.at(5, 3))
     normie.avanzar()
@@ -67,7 +67,7 @@ describe "Normie" {
   }
 
   test "Sigue avanzando una vez que el Chad delante suyo murió" {
-    const muro = new ChadMuro(position = game.at(4, 4))
+    const muro = new ChadMuro(position = game.at(4, 4), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
     const normie = new Normie(position = game.at(5, 4))
     normie.avanzar()

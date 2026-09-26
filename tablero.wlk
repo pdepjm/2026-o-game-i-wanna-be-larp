@@ -56,7 +56,7 @@ object seleccion {
 
   method plantarEn(posicion) {
     if (muroElegido && jardin.chadEn(posicion).estaMuerto()) {
-      jardin.agregar(new ChadMuro(position = posicion))
+      jardin.agregar(new ChadMuro(position = posicion, vida = 200, vidaMaxima = 200.0))
       escenario.reordenar()
     }
   }
