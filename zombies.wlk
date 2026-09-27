@@ -15,7 +15,7 @@ object zombie1{
 
     method mover(){
 
-        position = position.left(self.velocidad())
+            position = position.left(self.velocidad())
 
 
     }
