@@ -1,23 +1,60 @@
 import wollok.game.*
+import chads.*
+import normies.*
 
-import example.pepita
 
-program PepitaGame {
-	game.title("Pepita")
-	game.height(10)
-	game.width(10)
-    game.cellSize(50)
-	// add assets in asset folder, for example, for the background
-    // game.boardGround("fondo2.jpg")
+//Hay muchos comentarios para mi mismo por si me olvido que hace algo :P
 
-	//
+program chadsVSNormies{
 
-	// game.showAttributes(0) //Debug
-	game.addVisual(tumama)
+	var vidas = 3
+	const chads = []
+
+	game.title("Chads vs Normies")
+	game.height(5) // define cuantas filas tiene la grilla
+	game.width(9)  // define las columnas 
+	game.cellSize(80) // define el tamaño visual de cada casilla, en píxeles
+
+	game.onClickDo({ posicion => 
+		const chad = new ChadProvisorio(position = posicion)
+		chads.add(chad)
+		game.addVisual(chad)}) // crea un chad donde clickeo
+
+	const fila = 0.randomUpTo(5).truncate(0) //elijo una fila random del 0 al 4, pero sin el truncate puede dar numeros decimales. Asi que lo necesito para qsy no entendi esa parte
+	const normie = new Normie(position = game.at(8, fila)) //ubico un nuevo normie en la ultima columna
+
+	game.addVisual(normie) //el addVisual es para mostrar de manera visual lo que creo. Crearlo solo lo guarda en memoria, no muestra
+
+	const movimientoNormie = game.tick(1000, {
+		normie.avanzar()
+		const chadsChocados = chads.filter({chad => chad.position() == normie.position()})
+
+		chadsChocados.forEach({chad => 
+			game.removeVisual(chad)
+			chads.remove(chad)})
+
+		if(normie.position().x() == 0){ //accedo a la posicion x (osea horizontal) en la grilla del normie 
+			vidas -= 1
+			console.println("Perdiste una vida. Vidas restantes: " + vidas)
+			game.removeVisual(normie)
+			movimientoNormie.stop()
+
+			if(vidas == 0){
+				console.println("GAME OVER")
+				game.stop()
+			}
+		}
+
+		}, false)
+
+	
+
+	movimientoNormie.start()
+
 	game.start()
+
+
 }
 
-object tumama {
-  var property position = game.at(5,5)
-  method image() = "pepita.jpg"
-}
+
+
