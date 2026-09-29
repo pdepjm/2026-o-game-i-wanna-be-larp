@@ -1,14 +1,11 @@
 import wollok.game.*
 import chads.*
 import normies.*
-
+import tablero.*
 
 //Hay muchos comentarios para mi mismo por si me olvido que hace algo :P
-
 program chadsVSNormies{
 
-	var vidas = 3
-	const chads = []
 
 	game.title("Chads vs Normies")
 	game.height(5) // define cuantas filas tiene la grilla
@@ -17,7 +14,7 @@ program chadsVSNormies{
 
 	game.onClickDo({ posicion => 
 		const chad = new ChadProvisorio(position = posicion)
-		chads.add(chad)
+		tablero.agregarChad(chad)
 		game.addVisual(chad)}) // crea un chad donde clickeo
 
 	const fila = 0.randomUpTo(5).truncate(0) //elijo una fila random del 0 al 4, pero sin el truncate puede dar numeros decimales. Asi que lo necesito para qsy no entendi esa parte
@@ -27,19 +24,20 @@ program chadsVSNormies{
 
 	const movimientoNormie = game.tick(1000, {
 		normie.avanzar()
-		const chadsChocados = chads.filter({chad => chad.position() == normie.position()})
+		const chadsChocados = tablero.chads().filter({chad => chad.position() == normie.position()})
 
 		chadsChocados.forEach({chad => 
 			game.removeVisual(chad)
-			chads.remove(chad)})
+			tablero.eliminarChad(chad)
+			})
 
 		if(normie.position().x() == 0){ //accedo a la posicion x (osea horizontal) en la grilla del normie 
-			vidas -= 1
-			console.println("Perdiste una vida. Vidas restantes: " + vidas)
+			tablero.perderVida()
+			console.println("Perdiste una vida. Vidas restantes: " + tablero.vidas())
 			game.removeVisual(normie)
 			movimientoNormie.stop()
 
-			if(vidas == 0){
+			if(tablero.sinVidas()){
 				console.println("GAME OVER")
 				game.stop()
 			}
