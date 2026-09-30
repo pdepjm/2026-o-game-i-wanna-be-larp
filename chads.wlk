@@ -42,7 +42,7 @@ class ChadLanzador inherits Chad {
       objetivo.recibirDanio(danio)
     }
   }
-}
+
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {
