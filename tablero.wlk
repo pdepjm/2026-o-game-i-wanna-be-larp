@@ -42,6 +42,8 @@ object invasion {
   }
 
   method todos() = normies
+
+
 }
 
 object carta {
