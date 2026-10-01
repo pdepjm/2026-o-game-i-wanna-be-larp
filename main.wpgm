@@ -31,7 +31,7 @@ program chadsVSNormies{
 			tablero.eliminarChad(chad)
 			})
 
-		if(normie.position().x() == 0){ //accedo a la posicion x (osea horizontal) en la grilla del normie 
+		if(normie.llegoAlFinal()){ // accedo a la posicion x (osea horizontal) en la grilla del normie 
 			tablero.perderVida()
 			console.println("Perdiste una vida. Vidas restantes: " + tablero.vidas())
 			game.removeVisual(normie)

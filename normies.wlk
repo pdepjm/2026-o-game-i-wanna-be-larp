@@ -8,6 +8,8 @@ class Normie{
 		position = position.left(1)
 	}
 
+    method llegoAlFinal() = position.x() == 0
+
 	
 
 
