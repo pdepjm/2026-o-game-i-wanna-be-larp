@@ -53,6 +53,10 @@ program ChadsVsNormies {
     jardin.plantasEnJardin().forEach({ chad => chad.actuar() })
   })
 
+  //un foxy te viene a atacar a vos sin ninguna razon aparente
+  game.onTick(3400, "foxyJumpscare", { => elFoxyQueNoInvitoNadie.jumpscare() })
+
+
   game.start()
 }
 
