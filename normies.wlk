@@ -3,7 +3,21 @@ import tablero.*
 
 class Normie {
   var property position
-  //var vida = 100
+  var vida 
+
+  method vida() = vida
+  method estaMuerto() = vida <= 0
+
+   method recibirDanio(cantidad) {
+    vida = vida - cantidad
+    if (self.estaMuerto()) {
+      invasion.quitar(self)
+    }
+  }
+
+
+
+
   var objetivo = nada
 
   method image() {

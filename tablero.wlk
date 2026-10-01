@@ -11,11 +11,15 @@ object nada {
 
 object jardin {
   
+  
+  var aura = 0
   method limiteAnchoJardin() = 11
   method limitePodadora() = 3
   method limiteAltoJardin() = 4
   method altoJardin() = 5   
   
+
+
   const plantasEnJardin = []
 
   method plantasEnJardin() = plantasEnJardin
@@ -28,6 +32,12 @@ object jardin {
   method quitar(planta) {
     plantasEnJardin.remove(planta)
     game.removeVisual(planta)
+  }
+
+  method sumarAura(recursosGenerados){
+
+    aura += recursosGenerados
+
   }
 
   method chadPlantadoEn(posicion) = plantasEnJardin.findOrDefault(
@@ -49,15 +59,16 @@ object invasion {
     game.removeVisual(normie)
   }
 
+  method primerNormieEnFila(posy){
+
+    return normies.find({normie => (normie.position().y() == posy)})
+
+
+  }
+
+
   method todos() = normies
 }
-
- //object selectorPlantas 
-  
-  //const plantasDisponibles = [ChadMuro,ChadMuro]
-
-  //var property position = game.at(3, 5)
-  //method image() = "murachadfase1.png"
 
 object seleccion {
     var cartaElegida = null
@@ -71,7 +82,7 @@ object seleccion {
   method plantarEn(posicion) {
     if ((cartaElegida != null) && jardin.chadPlantadoEn(posicion).estaMuerto()) {
       
-      jardin.agregar((cartaElegida.chadQueRepresenta()).instanciarse(posicion,200,200.0))
+      jardin.agregar((cartaElegida.chadQueRepresenta()).instanciarse(posicion))
       escenario.reordenar()
 
 

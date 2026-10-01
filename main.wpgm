@@ -17,7 +17,7 @@ program ChadsVsNormies {
 
 
   menuDeCartas.mostrarMenu() //muestra el menu de cartas
-  invasion.agregar(new Normie(position = game.at(12, 2)))
+  invasion.agregar(new Normie(position = game.at(12, 2),vida = 20))
 
   //si hay una carta seleccionable en la posicion clickeada, se selecciona esa carta
 
@@ -46,6 +46,11 @@ program ChadsVsNormies {
     
     invasion.todos().forEach({ normie => normie.atacar() })
 
+  })
+
+  //pulsos de accion para los Chads (disparo, recursos, etc)
+  game.onTick(1500, "actuarChads" , {
+    jardin.plantasEnJardin().forEach({ chad => chad.actuar() })
   })
 
   game.start()

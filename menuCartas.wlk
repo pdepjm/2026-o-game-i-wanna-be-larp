@@ -59,12 +59,12 @@ object menuDeCartas{
 
     method posXCartas() = 5
 
+    const chadLanzadorPrueba = new ChadLanzador(position = game.at(5,4),vida = 150, vidaMaxima = 150.0)
 
     const chadNuezPrueba1 = new ChadMuro(position = game.at(5,4),vida = 200, vidaMaxima = 200.0)
     
-    const chadNuezPrueba2 = new ChadMuro(position = game.at(5,5),vida = 200, vidaMaxima = 200.0)
 
-    const chadsSeleccionados = [chadNuezPrueba1,chadNuezPrueba2]  
+    const chadsSeleccionados = [chadNuezPrueba1,chadLanzadorPrueba]  
 
     //esto es algo de prueba, en caso de querer agregar mas cartas al menu, agregarlas acá
 
