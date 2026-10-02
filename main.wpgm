@@ -37,7 +37,23 @@ program ChadsVsNormies {
 
   game.onTick(1000, "avanzarNormies", {
     
-    invasion.todos().forEach({ normie => normie.avanzar() })
+    invasion.todos().forEach({ normie => 
+    normie.avanzar() 
+
+    if (normie.llegoALaCasa()) {
+      partida.perderVida()
+      invasion.quitar(normie)
+
+      console.println(
+        "Perdiste una vida. Vidas restantes: " + partida.vidas()
+      )
+
+      if (partida.sinVidas()) {
+        console.println("PERDISTE BRO")
+        game.stop()
+      }
+    }    
+    })
     escenario.reordenar()
 
   })

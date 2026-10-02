@@ -36,6 +36,8 @@ class Normie {
     objetivo.recibirDanio(10)
     if (objetivo.estaMuerto()) objetivo = nada
   }
+
+  method llegoALaCasa() = position.x() == 0
 }
 
 object elFoxyQueNoInvitoNadie {
