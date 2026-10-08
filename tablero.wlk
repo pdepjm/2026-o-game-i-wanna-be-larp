@@ -9,6 +9,21 @@ object nada {
   method estaMuerto() = true
 }
 
+object partida {
+  var vidas = 3
+
+  method vidas() = vidas
+
+  method perderVida() {
+    vidas -= 1
+  }
+
+  method sinVidas() = vidas == 0
+}
+
+
+
+
 object jardin {
   
   
@@ -59,10 +74,9 @@ object invasion {
     game.removeVisual(normie)
   }
 
-  method primerNormieEnFila(posy){
+   method primerNormieEnFila(posy){
 
-    return normies.find({normie => (normie.position().y() == posy)})
-
+    return normies.findOrDefault({normie => (normie.position().y() == posy)},nada)
 
   }
 
@@ -82,7 +96,7 @@ object seleccion {
   method plantarEn(posicion) {
     if ((cartaElegida != null) && jardin.chadPlantadoEn(posicion).estaMuerto()) {
       
-      jardin.agregar((cartaElegida.chadQueRepresenta()).instanciarse(posicion))
+      jardin.agregar(cartaElegida.crearChadEn(posicion))
       escenario.reordenar()
 
 
