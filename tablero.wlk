@@ -1,7 +1,8 @@
-
+import archivo_invasion.*
 import wollok.game.*
 import chads.*
 import menuCartas.*
+import archivo_jardin.*
 
 //Para evitar el uso de NULL
 object nada {
@@ -9,80 +10,7 @@ object nada {
   method estaMuerto() = true
 }
 
-object partida {
-  var vidas = 3
 
-  method vidas() = vidas
-
-  method perderVida() {
-    vidas -= 1
-  }
-
-  method sinVidas() = vidas == 0
-}
-
-
-
-
-object jardin {
-  
-  
-  var aura = 0
-  method limiteAnchoJardin() = 11
-  method limitePodadora() = 3
-  method limiteAltoJardin() = 4
-  method altoJardin() = 5   
-  
-
-
-  const plantasEnJardin = []
-
-  method plantasEnJardin() = plantasEnJardin
-
-  method agregar(planta) {
-    plantasEnJardin.add(planta)
-    game.addVisual(planta)
-  }
-
-  method quitar(planta) {
-    plantasEnJardin.remove(planta)
-    game.removeVisual(planta)
-  }
-
-  method sumarAura(recursosGenerados){
-
-    aura += recursosGenerados
-
-  }
-
-  method chadPlantadoEn(posicion) = plantasEnJardin.findOrDefault(
-    { p => p.position().x() == posicion.x() && p.position().y() == posicion.y() },
-    nada
-  )
-}
-
-object invasion {
-  const normies = []
-
-  method agregar(normie) {
-    normies.add(normie)
-    game.addVisual(normie)
-  }
-
-  method quitar(normie) {
-    normies.remove(normie)
-    game.removeVisual(normie)
-  }
-
-   method primerNormieEnFila(posy){
-
-    return normies.findOrDefault({normie => (normie.position().y() == posy)},nada)
-
-  }
-
-
-  method todos() = normies
-}
 
 object seleccion {
     var cartaElegida = null

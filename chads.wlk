@@ -1,5 +1,8 @@
 import wollok.game.*
 import tablero.*
+import partida_manager.*
+import archivo_jardin.*
+import archivo_invasion.*
 
 class Chad {
   var property position
@@ -8,6 +11,8 @@ class Chad {
 
   method vida() = vida
   method estaMuerto() = vida <= 0
+
+  method recibirA(normie) //un chad recibe a un normie a su manera
 
   method actuar()
 
@@ -20,7 +25,7 @@ class Chad {
     }
   }
 
-  method instanciarse(posicion)
+  
 
 
 }
@@ -39,13 +44,13 @@ class ChadMuro inherits Chad {
   
   override method actuar(){}
   
-  override method instanciarse(nuevaPosicion){
+  
 
-      return new ChadMuro(position = nuevaPosicion,vida = 200,vidaMaxima = 200)
+  override method recibirA(normie){
+
+      normie.frenarAnte(self)    
 
   }
-
-  
 
 }
 
@@ -61,11 +66,15 @@ class ChadLanzador inherits Chad {
     }
   }
 
-  override method instanciarse(nuevaPosicion){
+  
 
-      return new ChadLanzador(position = nuevaPosicion,vida = 100,vidaMaxima = 100)
+  override method recibirA(normie){
+
+    normie.frenarAnte(self)
+
 
   }
+
 
 }
 
@@ -76,15 +85,13 @@ class ChadOmnisciente inherits Chad {
   override method image() = "chad_omnisciente.png"
 
    override method actuar() {
-    jardin.sumarAura(recursosGenerados)
+    partida.sumarAura(recursosGenerados)
   }
 
-  override method instanciarse(nuevaPosicion){
+  override method recibirA(normie){
 
-      return new ChadOmnisciente(position = nuevaPosicion,vida = 75,vidaMaxima = 75)
+    normie.frenarAnte(self)
 
   }
-
-
 
 }
