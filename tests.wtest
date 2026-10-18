@@ -1,6 +1,11 @@
+import wollok.game.*
 import chads.*
 import normies.*
 import tablero.*
+import archivo_jardin.*
+import tiposChads.*
+import tiposNormies.*
+
 
 describe "Chad Muro" {
   test "Empieza con 200 de vida" {
@@ -42,7 +47,7 @@ describe "Chad Muro" {
 
 describe "Normie" {
   test "Avanza si el camino está libre" {
-    const normie = new Normie(position = game.at(10, 1),vida = 200)
+    const normie = new NormieComun(position = game.at(10, 1),vida = 200,danio = 10)
     normie.avanzar()
     assert.equals(9, normie.position().x())
   }
@@ -50,7 +55,7 @@ describe "Normie" {
   test "Se frena si hay un Chad vivo adelante" {
     const muro = new ChadMuro(position = game.at(4, 2), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new Normie(position = game.at(5, 2),vida = 200)
+    const normie = new NormieComun(position = game.at(5, 2),vida = 200,danio = 10)
     normie.avanzar()
     assert.equals(5, normie.position().x())
     jardin.quitar(muro)
@@ -59,20 +64,49 @@ describe "Normie" {
   test "Ataca al Chad que tiene enfrente" {
     const muro = new ChadMuro(position = game.at(4, 3), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new Normie(position = game.at(5, 3),vida = 200)
+    const normie = new NormieComun(position = game.at(5, 3),vida = 200,danio = 10)
     normie.avanzar()
-    normie.atacar()
-    assert.equals(190, muro.vida())
+    normie.atacar(muro)
+    assert.equals(180, muro.vida())
     jardin.quitar(muro)
   }
 
   test "Sigue avanzando una vez que el Chad delante suyo murió" {
     const muro = new ChadMuro(position = game.at(4, 4), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new Normie(position = game.at(5, 4),vida = 200)
+    const normie = new NormieComun(position = game.at(5, 4),vida = 200,danio = 10)
     normie.avanzar()
     muro.recibirDanio(200)
     normie.avanzar()
     assert.equals(4, normie.position().x())
+  }
+}
+
+test "tipoNormieRapido se crea con 40 de vida y 10 de daño" {
+    const rapido = tipoNormieRapido.crearEn(game.at(12, 2))
+    assert.equals(50, rapido.vida())
+    assert.equals(10, rapido.danio())
+  }
+
+  test "tipoNormieTanque soporta 100 de daño sin morir" {
+    const tanque = tipoNormieTanque.crearEn(game.at(12, 2))
+    tanque.recibirDanio(100)
+    assert.equals(150, tanque.vida())
+    assert.notThat(tanque.estaMuerto())
+  }
+
+
+describe "Pruebas de ChadExplosivo y ChadHielo" {
+
+  test "El ChadExplosivo se crea con 1 de vida y su fábrica devuelve la imagen correcta" {
+    const mina = tipoChadExplosivo.crearEn(game.at(2, 2))
+    assert.equals(1, mina.vida())
+    assert.equals("chad_explosivo.png", tipoChadExplosivo.image())
+  }
+
+  test "El ChadHielo se crea con 120 de vida y 15 de daño" {
+    const hielo = tipoChadHielo.crearEn(game.at(3, 2))
+    assert.equals(120, hielo.vida())
+    assert.equals(15, hielo.danio())
   }
 }
