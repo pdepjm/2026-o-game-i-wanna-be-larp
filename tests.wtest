@@ -63,7 +63,7 @@ describe "Normie" {
     jardin.agregar(muro)
     const normie = new NormieComun(position = game.at(5, 3),vida = 200,danio = 10)
     normie.avanzar()
-    normie.atacar()
+    normie.atacar(muro)
     assert.equals(190, muro.vida())
     jardin.quitar(muro)
   }

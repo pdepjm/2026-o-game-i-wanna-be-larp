@@ -4,6 +4,8 @@ import partida_manager.*
 import archivo_jardin.*
 import archivo_invasion.*
 
+
+//archivo para definir las clases de los chads
 class Chad {
   var property position
   var vida 
@@ -56,7 +58,7 @@ class ChadMuro inherits Chad {
 
 // Defensor a distancia: busca al enemigo más próximo en su carril y le aplica daño
 class ChadLanzador inherits Chad {
-  const danio = 20
+  const danio
   override method image() = "chadprime.png" //nose cual imagen seria
 
   override method actuar(){
@@ -80,7 +82,7 @@ class ChadLanzador inherits Chad {
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {
-  const recursosGenerados = 25
+  const recursosGenerados 
 
   override method image() = "chad_omnisciente.png"
 

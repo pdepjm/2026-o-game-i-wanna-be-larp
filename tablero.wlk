@@ -11,10 +11,26 @@ object nada {
 }
 
 
-
 object seleccion {
     var cartaElegida = null
 
+  method habilitarSeleccion(posicion){
+
+    if (menuDeCartas.hayCartaEn(posicion)) {
+            
+      self.elegirChad(menuDeCartas.chadEn(posicion))
+
+    } else if (posicion.x() >= jardin.limitePodadora() && posicion.x() <= jardin.limiteAnchoJardin() && posicion.y() <= jardin.limiteAltoJardin()) {
+      
+      //si la posicion donde se clickea no excede los limites del jardin, se pasa a plantar el chad
+      
+      self.plantarEn(posicion)
+
+    }
+
+
+  }
+  
   method elegirChad(chad) {
 
         cartaElegida = chad

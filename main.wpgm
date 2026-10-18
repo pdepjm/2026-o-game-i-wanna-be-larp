@@ -1,3 +1,4 @@
+import spawner_normies.*
 import wollok.game.*
 import tablero.*
 import chads.*
@@ -7,6 +8,8 @@ import partida_manager.*
 import archivo_jardin.*
 import archivo_invasion.*
 import cartel.*
+
+
 
 program ChadsVsNormies {
   game.title("Chads vs Normies")
@@ -24,17 +27,7 @@ program ChadsVsNormies {
   //si hay una carta seleccionable en la posicion clickeada, se selecciona esa carta
 
   game.onClickDo({ posicion =>
-    if (menuDeCartas.hayCartaEn(posicion)) {
-            
-      seleccion.elegirChad(menuDeCartas.chadEn(posicion))
-
-    } else if (posicion.x() >= jardin.limitePodadora() && posicion.x() <= jardin.limiteAnchoJardin() && posicion.y() <= jardin.limiteAltoJardin()) {
-      
-      //si la posicion donde se clickea no excede los limites del jardin, se pasa a plantar el chad
-      
-      seleccion.plantarEn(posicion)
-
-    }
+    seleccion.habilitarSeleccion(posicion)
   })
 
   game.onTick(1000, "avanzarNormies", {
@@ -66,9 +59,13 @@ program ChadsVsNormies {
   
   })
 
+  game.onTick(10000,"spawnear normies",{
 
-  //un foxy te viene a atacar a vos sin ninguna razon aparente
-  game.onTick(3400, "foxyJumpscare", { => elFoxyQueNoInvitoNadie.jumpscare() })
+    spawnerDeNormies.spawnearNormie()
+
+
+  })
+  
 
 
   game.start()
