@@ -6,17 +6,6 @@ import archivo_jardin.*
 import partida_manager.*
 import proyectiles.*
 
-object partida {
-  var vidas = 3
-
-  method vidas() = vidas
-
-  method perderVida() {
-    vidas -= 1
-  }
-
-  method sinVidas() = vidas == 0
-}
 
 
 //Para evitar el uso de NULL
