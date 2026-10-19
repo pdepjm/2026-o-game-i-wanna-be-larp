@@ -1,38 +1,41 @@
 import chads.*
-
+import tiposChads.*
 
 class Carta{
    //clase que representa las cartas a utilizar en el menu de selección de cartas
-    var chadQueRepresenta
     
-    var image
+    const image
 
-    var position
+    const position
+
+    const tipoChad
+
+    method costo() = tipoChad.costo()
 
     method image() = image
-
+    method esCarta() = true
     method position() = position
 
-    method chadQueRepresenta() = chadQueRepresenta
+    method crearChadEn(pos){
 
-    method init(chad, posicion, imagen){
+        return tipoChad.crearEn(pos)
 
-        chadQueRepresenta = chad
-
-        position = posicion
-
-        image = imagen
     }
 
 
-
 }
+
+object sinCartaElegida {
+  method esCarta() = false
+  method costo() = 0
+}
+
 
 object generadorDeCartas{
 
     //genera las cartas en base a los chads que se hayan seleccionado
     const chadsDisponibles = []
-        
+         
     var posXDeCartas = 3
 
 
@@ -40,7 +43,7 @@ object generadorDeCartas{
         chadsSeleccionados.forEach({ chad =>
             
             const cartaNueva = new Carta(
-                chadQueRepresenta = chad,
+                tipoChad = chad,
                 image = chad.image(),
                 position = game.at(posXDeCartas, 5)
             )
@@ -58,13 +61,13 @@ object generadorDeCartas{
 object menuDeCartas{
 
     method posXCartas() = 5
+    var menuMostrado = false
 
-    const chadLanzadorPrueba = new ChadLanzador(position = game.at(5,4),vida = 150, vidaMaxima = 150.0)
-
-    const chadNuezPrueba1 = new ChadMuro(position = game.at(5,4),vida = 200, vidaMaxima = 200.0)
-    
-
-    const chadsSeleccionados = [chadNuezPrueba1,chadLanzadorPrueba]  
+    const chadsSeleccionados = [
+        tipoChadLanzador,
+        tipoChadMuro,
+        tipoChadOmnisciente
+    ]  
 
     //esto es algo de prueba, en caso de querer agregar mas cartas al menu, agregarlas acá
 
@@ -72,17 +75,20 @@ object menuDeCartas{
 
     method cartasDisponibles() = cartasDisponibles
 
-    method mostrarMenu(){
-
-      cartasDisponibles.forEach({cartaChad => game.addVisual(cartaChad)})
-
-
+    method mostrarMenu() {
+        if (!menuMostrado) {
+            cartasDisponibles.forEach({ cartaChad =>
+                game.addVisual(cartaChad)
+            })
+            menuMostrado = true
+        }
     }
 
     method hayCartaEn(posicion) = cartasDisponibles.any({chad => chad.position() == posicion}) 
 
-    method chadEn(posicion) = cartasDisponibles.find({chad => chad.position() == posicion})
+    method chadEn(posicion) = cartasDisponibles.findOrDefault({ chad => chad.position() == posicion },
+    sinCartaElegida
+    )
 
 
 }
-

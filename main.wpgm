@@ -1,8 +1,16 @@
+import spawner_normies.*
+import contador_aura.*
 import wollok.game.*
 import tablero.*
 import chads.*
 import normies.*
 import menuCartas.*
+import partida_manager.*
+import archivo_jardin.*
+import archivo_invasion.*
+import cartel.*
+import proyectiles.*
+import tiposNormies.*
 
 
 
@@ -14,54 +22,26 @@ program ChadsVsNormies {
   game.boardGround("Patiochadfinal.png")
 
   
-
-
+  game.addVisual(cartel)
   menuDeCartas.mostrarMenu() //muestra el menu de cartas
-  invasion.agregar(new Normie(position = game.at(12, 2),vida = 20))
+  contadorSoles.mostrar()
+
+  invasion.agregar(tipoNormieComun.crearEn(game.at(12, 2)))
 
   //si hay una carta seleccionable en la posicion clickeada, se selecciona esa carta
 
   game.onClickDo({ posicion =>
-    if (menuDeCartas.hayCartaEn(posicion)) {
-            
-      seleccion.elegirChad(menuDeCartas.chadEn(posicion))
-
-    } else if (posicion.x() >= jardin.limitePodadora() && posicion.x() <= jardin.limiteAnchoJardin() && posicion.y() <= jardin.limiteAltoJardin()) {
-      
-      //si la posicion donde se clickea no excede los limites del jardin, se pasa a plantar el chad
-      
-      seleccion.plantarEn(posicion)
-
-    }
+    seleccion.habilitarSeleccion(posicion)
   })
 
-  game.onTick(1000, "avanzarNormies", {
-    
-    invasion.todos().forEach({ normie => 
-    normie.avanzar() 
-
-    if (normie.llegoALaCasa()) {
-      partida.perderVida()
-      invasion.quitar(normie)
-
-      console.println(
-        "Perdiste una vida. Vidas restantes: " + partida.vidas()
-      )
-
-      if (partida.sinVidas()) {
-        console.println("PERDISTE BRO")
-        game.stop()
-      }
-    }    
-    })
+  game.onTick(2500, "avanzarNormies", {
+    invasion.avanzar_invasion()
     escenario.reordenar()
 
   })
 
-  game.onTick(1000, "atacarNormies", {
-    
-    invasion.todos().forEach({ normie => normie.atacar() })
-
+  game.onTick(250, "avanzarProyectiles", {
+  proyectiles.avanzarTodos()
   })
 
   //pulsos de accion para los Chads (disparo, recursos, etc)
@@ -69,13 +49,32 @@ program ChadsVsNormies {
     jardin.plantasEnJardin().forEach({ chad => chad.actuar() })
   })
 
-  //un foxy te viene a atacar a vos sin ninguna razon aparente
-  game.onTick(3400, "foxyJumpscare", { => elFoxyQueNoInvitoNadie.jumpscare() })
+  game.onTick(1000, "actualizarGeneracionSoles", {
+    jardin.plantasEnJardin().forEach({ chad =>
+      chad.generarRecursos()
+    })
+  })
 
+  game.onTick(12000, "auraPasiva", {
+    partida.generarAuraPasiva()
+  })
 
+  game.onClickDo({posicion => 
+  
+    if(posicion == cartel.position()){
+
+        cartel.actuar()
+    }
+  
+  })
+
+  game.onTick(10000,"spawnear normies",{
+    spawnerDeNormies.spawnearNormie()
+
+  })
+  
   game.start()
 }
-
 
 
 
