@@ -1,4 +1,5 @@
 import spawner_normies.*
+import contador_aura.*
 import wollok.game.*
 import tablero.*
 import chads.*
@@ -8,6 +9,8 @@ import partida_manager.*
 import archivo_jardin.*
 import archivo_invasion.*
 import cartel.*
+import proyectiles.*
+import tiposNormies.*
 
 
 
@@ -20,9 +23,10 @@ program ChadsVsNormies {
 
   
   game.addVisual(cartel)
-
   menuDeCartas.mostrarMenu() //muestra el menu de cartas
-  invasion.agregar(new NormieComun(position = game.at(12, 2),vida = 20,danio = 10))
+  contadorSoles.mostrar()
+
+  invasion.agregar(tipoNormieComun.crearEn(game.at(12, 2)))
 
   //si hay una carta seleccionable en la posicion clickeada, se selecciona esa carta
 
@@ -30,23 +34,29 @@ program ChadsVsNormies {
     seleccion.habilitarSeleccion(posicion)
   })
 
-  game.onTick(1000, "avanzarNormies", {
-    
+  game.onTick(2500, "avanzarNormies", {
     invasion.avanzar_invasion()
     escenario.reordenar()
 
   })
 
-  
+  game.onTick(250, "avanzarProyectiles", {
+  proyectiles.avanzarTodos()
+  })
+
   //pulsos de accion para los Chads (disparo, recursos, etc)
   game.onTick(1500, "actuarChads" , {
     jardin.plantasEnJardin().forEach({ chad => chad.actuar() })
   })
 
-  game.onTick(1000,"checkear vidas",{
+  game.onTick(1000, "actualizarGeneracionSoles", {
+    jardin.plantasEnJardin().forEach({ chad =>
+      chad.generarRecursos()
+    })
+  })
 
-    partida.checkearVidas()
-
+  game.onTick(12000, "auraPasiva", {
+    partida.generarAuraPasiva()
   })
 
   game.onClickDo({posicion => 
@@ -56,18 +66,13 @@ program ChadsVsNormies {
         cartel.actuar()
     }
   
-  
   })
 
   game.onTick(10000,"spawnear normies",{
-
     spawnerDeNormies.spawnearNormie()
-
 
   })
   
-
-
   game.start()
 }
 

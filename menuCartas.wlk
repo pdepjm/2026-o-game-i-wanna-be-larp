@@ -10,8 +10,10 @@ class Carta{
 
     const tipoChad
 
-    method image() = image
+    method costo() = tipoChad.costo()
 
+    method image() = image
+    method esCarta() = true
     method position() = position
 
     method crearChadEn(pos){
@@ -21,6 +23,11 @@ class Carta{
     }
 
 
+}
+
+object sinCartaElegida {
+  method esCarta() = false
+  method costo() = 0
 }
 
 
@@ -54,8 +61,13 @@ object generadorDeCartas{
 object menuDeCartas{
 
     method posXCartas() = 5
+    var menuMostrado = false
 
-    const chadsSeleccionados = [tipoChadLanzador,tipoChadMuro]  
+    const chadsSeleccionados = [
+        tipoChadLanzador,
+        tipoChadMuro,
+        tipoChadOmnisciente
+    ]  
 
     //esto es algo de prueba, en caso de querer agregar mas cartas al menu, agregarlas acá
 
@@ -63,15 +75,20 @@ object menuDeCartas{
 
     method cartasDisponibles() = cartasDisponibles
 
-    method mostrarMenu(){
-
-      cartasDisponibles.forEach({cartaChad => game.addVisual(cartaChad)})
-
+    method mostrarMenu() {
+        if (!menuMostrado) {
+            cartasDisponibles.forEach({ cartaChad =>
+                game.addVisual(cartaChad)
+            })
+            menuMostrado = true
+        }
     }
 
     method hayCartaEn(posicion) = cartasDisponibles.any({chad => chad.position() == posicion}) 
 
-    method chadEn(posicion) = cartasDisponibles.find({chad => chad.position() == posicion})
+    method chadEn(posicion) = cartasDisponibles.findOrDefault({ chad => chad.position() == posicion },
+    sinCartaElegida
+    )
 
 
 }

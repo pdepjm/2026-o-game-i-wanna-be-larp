@@ -25,16 +25,16 @@ class Normie {
     }
   }
 
-
+  method pasar(){
+    estaAtacando = false
+    frenado = false
+  }
 
 
   
 
   method image() 
-
-
-  method actuarAnte(chad) //metodo abstracto donde el normie hace una accion cuando tiene un chad enfrente
-                                                       
+                                               
   method frenarAnte(chad){
 
     frenado = true
@@ -44,24 +44,8 @@ class Normie {
   }
 
   method checkearQueHayEnFrente(siguiente){
-
-    const chad = jardin.chadPlantadoEn(siguiente)
-    
-    if(chad != nada){
-    
-    self.actuarAnte(chad)
-
-    }else{
-      
-      estaAtacando = false
-      frenado = false
-
-    }
-
-
-
+    jardin.chadPlantadoEn(siguiente).recibirA(self)
   }
-
 
   method avanzar() {
     const siguiente = position.left(1)
@@ -85,7 +69,9 @@ class Normie {
 
   }
 
-  method atacar(chad) //cada normie ataca a un chad a su manera
+  method atacar(chad) {
+    chad.recibirDanio(danio)
+  } //cada normie ataca a un chad a su manera
 
   method llegoALaCasa() = position.x() == 0 
 }
@@ -97,17 +83,9 @@ class NormieComun inherits Normie{
     else return "normieNormalAttack.png"
   }
 
-  override method actuarAnte(chad){
-
-    chad.recibirA(self)
-
-  }
-
-  override method atacar(chad){
-    
+  override method atacar(chad) {
     estaAtacando = true
-    chad.recibirDanio(danio)
-
+    super(chad)
   }
 
 }
