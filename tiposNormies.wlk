@@ -7,6 +7,7 @@ object tipoNormieComun{
     method crearEn(pos) = new NormieComun(position = pos,vida = 100,danio = 20)
 
 }
+<<<<<<< HEAD
 
 
 object tipoNormieRapido {
@@ -17,3 +18,5 @@ object tipoNormieRapido {
 object tipoNormieTanque {
   method crearEn(pos) = new NormieTanque(position = pos, vida = 250, danio = 40)
 }
+=======
+>>>>>>> origin/develop

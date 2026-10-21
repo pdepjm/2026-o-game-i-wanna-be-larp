@@ -3,9 +3,7 @@ import wollok.game.*
 import tablero.*
 import archivo_jardin.*
 import archivo_invasion.*
-
-
-
+import proyectiles.*
 
 //archivo para definir las clases de los chads
 class Chad {
@@ -17,7 +15,7 @@ class Chad {
   method estaMuerto() = vida <= 0
 
   method recibirA(normie) //un chad recibe a un normie a su manera
-
+  
   method actuar()
 
   method image()
@@ -29,6 +27,7 @@ class Chad {
     }
   }
 
+  method generarRecursos() {}
   
 
 
@@ -60,22 +59,21 @@ class ChadMuro inherits Chad {
 
 // Defensor a distancia: busca al enemigo más próximo en su carril y le aplica daño
 class ChadLanzador inherits Chad {
-  const property danio
+  const danio
   override method image() = "chadprime.png" //nose cual imagen seria
 
-  override method actuar(){
-    const objetivo = invasion.primerNormieEnFila(position.y())
-    if(objetivo != null && !objetivo.estaMuerto()){
-      objetivo.recibirDanio(danio)
+  override method actuar() {
+    const objetivo = invasion.normieMasCercanoDelanteDe(position)
+
+    if (!objetivo.estaMuerto()) {
+      proyectiles.agregar(
+        new Proyectil(position = position, danio = danio)
+      )
     }
   }
-
-  
-
   override method recibirA(normie){
 
     normie.frenarAnte(self)
-
 
   }
 
@@ -84,20 +82,34 @@ class ChadLanzador inherits Chad {
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {
-  const property recursosGenerados 
+const property recursosGenerados 
+  var generandoAura = false
+  var segundosDesdeUltimaGeneracion = new Range(start = 0, end = 9).anyOne()
 
-  override method image() = "chad_omnisciente.png"
-
-   override method actuar() {
-  partida.sumarAura(recursosGenerados)
+  override method image() {
+    if (generandoAura) {
+      return "chad_omnisciente_aura.png"
+    }
+    return "chad_omnisciente.png"
   }
 
-  override method recibirA(normie){
+  override method actuar() {
+    generandoAura = false
+  }
 
+  override method generarRecursos() {
+    segundosDesdeUltimaGeneracion += 1
+
+    if (segundosDesdeUltimaGeneracion >= 10) {
+      partida.sumarAura(recursosGenerados)
+      segundosDesdeUltimaGeneracion = 0
+      generandoAura = true
+    }
+  }
+
+  override method recibirA(normie) {
     normie.frenarAnte(self)
-
   }
-
 }
 
 class ChadExplosivo inherits Chad {

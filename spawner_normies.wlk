@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import wollok.game.*
+=======
+>>>>>>> origin/develop
 import normies.*
 import archivo_jardin.*
 import tiposNormies.*

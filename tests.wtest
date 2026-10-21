@@ -1,11 +1,13 @@
-import wollok.game.*
+import archivo_invasion.invasion
 import chads.*
 import normies.*
 import tablero.*
+import proyectiles.*
 import archivo_jardin.*
-import tiposChads.*
+import menuCartas.*
+import partida_manager.*
 import tiposNormies.*
-
+import tiposChads.*
 
 describe "Chad Muro" {
   test "Empieza con 200 de vida" {
@@ -25,7 +27,7 @@ describe "Chad Muro" {
   }
 
   test "A mitad de vida se ve dañado" {
-   const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
+    const muro = new ChadMuro(position = game.at(0, 0), vida = 200, vidaMaxima = 200.0)
     muro.recibirDanio(70)
     assert.equals("murachadfase2.png", muro.image())
   }
@@ -41,13 +43,13 @@ describe "Chad Muro" {
     jardin.agregar(muro)
     muro.recibirDanio(200)
     assert.that(muro.estaMuerto())
-    assert.that(jardin.chadPlantadoEn(game.at(8, 3)).estaMuerto())
+    assert.that(!jardin.plantasEnJardin().contains(muro))
   }
 }
 
 describe "Normie" {
   test "Avanza si el camino está libre" {
-    const normie = new NormieComun(position = game.at(10, 1),vida = 200,danio = 10)
+    const normie = new NormieComun(position = game.at(10, 1), vida = 200, danio = 10)
     normie.avanzar()
     assert.equals(9, normie.position().x())
   }
@@ -55,7 +57,7 @@ describe "Normie" {
   test "Se frena si hay un Chad vivo adelante" {
     const muro = new ChadMuro(position = game.at(4, 2), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new NormieComun(position = game.at(5, 2),vida = 200,danio = 10)
+    const normie = new NormieComun(position = game.at(5, 2), vida = 200, danio = 10)
     normie.avanzar()
     assert.equals(5, normie.position().x())
     jardin.quitar(muro)
@@ -64,7 +66,7 @@ describe "Normie" {
   test "Ataca al Chad que tiene enfrente" {
     const muro = new ChadMuro(position = game.at(4, 3), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new NormieComun(position = game.at(5, 3),vida = 200,danio = 10)
+    const normie = new NormieComun(position = game.at(5, 3), vida = 200, danio = 10)
     normie.avanzar()
     normie.atacar(muro)
     assert.equals(180, muro.vida())
@@ -74,15 +76,14 @@ describe "Normie" {
   test "Sigue avanzando una vez que el Chad delante suyo murió" {
     const muro = new ChadMuro(position = game.at(4, 4), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new NormieComun(position = game.at(5, 4),vida = 200,danio = 10)
+    const normie = new NormieComun(position = game.at(5, 4), vida = 200, danio = 10)
     normie.avanzar()
     muro.recibirDanio(200)
     normie.avanzar()
     assert.equals(4, normie.position().x())
   }
-}
 
-test "tipoNormieRapido se crea con 40 de vida y 10 de daño" {
+  test "tipoNormieRapido se crea con 50 de vida y 10 de daño" {
     const rapido = tipoNormieRapido.crearEn(game.at(12, 2))
     assert.equals(50, rapido.vida())
     assert.equals(10, rapido.danio())
@@ -95,9 +96,23 @@ test "tipoNormieRapido se crea con 40 de vida y 10 de daño" {
     assert.notThat(tanque.estaMuerto())
   }
 
+  test "Normie que llega a casa pierde una vida y se elimina" {
+    const vidasIniciales = partida.vidas()
+    const normie = new NormieComun(
+      position = game.at(1, 2),
+      vida = 100,
+      danio = 10
+    )
+
+    invasion.agregar(normie)
+    normie.avanzar()
+
+    assert.that(partida.vidas() == vidasIniciales - 1)
+    assert.that(!invasion.todos().contains(normie))
+  }
+}
 
 describe "Pruebas de ChadExplosivo y ChadHielo" {
-
   test "El ChadExplosivo se crea con 1 de vida y su fábrica devuelve la imagen correcta" {
     const mina = tipoChadExplosivo.crearEn(game.at(2, 2))
     assert.equals(1, mina.vida())
@@ -108,5 +123,301 @@ describe "Pruebas de ChadExplosivo y ChadHielo" {
     const hielo = tipoChadHielo.crearEn(game.at(3, 2))
     assert.equals(120, hielo.vida())
     assert.equals(15, hielo.danio())
+  }
+}
+
+describe "Chad Lanzador" {
+  test "Dispara un proyectil contra el Normie vivo mas cercano" {
+    game.width(13)
+    game.height(6)
+
+    const lanzador = new ChadLanzador(
+      position = game.at(4, 2),
+      vida = 100,
+      vidaMaxima = 100.0,
+      danio = 20
+    )
+
+    const lejano = new NormieComun(
+      position = game.at(10, 2),
+      vida = 100,
+      danio = 10
+    )
+
+    const cercano = new NormieComun(
+      position = game.at(6, 2),
+      vida = 100,
+      danio = 10
+    )
+
+    const detras = new NormieComun(
+      position = game.at(2, 2),
+      vida = 100,
+      danio = 10
+    )
+
+    invasion.agregar(lejano)
+    invasion.agregar(cercano)
+    invasion.agregar(detras)
+
+    lanzador.actuar()
+
+    // El disparo no causa daño instantaneo.
+    assert.equals(100, cercano.vida())
+    assert.equals(100, lejano.vida())
+    assert.equals(100, detras.vida())
+
+    // El proyectil avanza hacia el objetivo.
+    proyectiles.avanzarTodos()
+    assert.equals(100, cercano.vida())
+
+    proyectiles.avanzarTodos()
+    assert.equals(80, cercano.vida())
+    assert.equals(100, lejano.vida())
+    assert.equals(100, detras.vida())
+
+    invasion.quitar(lejano)
+    invasion.quitar(cercano)
+    invasion.quitar(detras)
+  }
+
+  test "No dispara si no hay Normies delante" {
+    game.width(13)
+    game.height(6)
+
+    const lanzador = new ChadLanzador(
+      position = game.at(4, 5),
+      vida = 100,
+      vidaMaxima = 100.0,
+      danio = 20
+    )
+
+    const cantidadAntes = proyectiles.todos().size()
+
+    lanzador.actuar()
+
+    assert.equals(cantidadAntes, proyectiles.todos().size())
+  }
+}
+
+describe "Chad Omnisciente" {
+  test "Genera 25 de aura durante diez ciclos" {
+    const auraInicial = partida.aura()
+    const girasol = tipoChadOmnisciente.crearEn(game.at(0, 0))
+
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach({ paso =>
+      girasol.generarRecursos()
+    })
+
+    assert.equals(auraInicial + 25, partida.aura())
+
+    assert.that(partida.gastarAura(25))
+    assert.equals(auraInicial, partida.aura())
+  }
+
+  test "Cambia de imagen al generar aura y vuelve a la normal" {
+    const auraInicial = partida.aura()
+    const girasol = tipoChadOmnisciente.crearEn(game.at(0, 0))
+
+    assert.equals("chad_omnisciente.png", girasol.image())
+
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach({ paso =>
+      girasol.generarRecursos()
+    })
+
+    assert.equals("chad_omnisciente_aura.png", girasol.image())
+
+    girasol.actuar()
+
+    assert.equals("chad_omnisciente.png", girasol.image())
+
+    assert.that(partida.gastarAura(25))
+    assert.equals(auraInicial, partida.aura())
+  }
+}
+
+describe "Aura" {
+  test "Sumar y gastar aura deja el contador en su valor inicial" {
+    const auraInicial = partida.aura()
+
+    partida.sumarAura(25)
+    assert.equals(auraInicial + 25, partida.aura())
+
+    assert.that(partida.gastarAura(25))
+    assert.equals(auraInicial, partida.aura())
+  }
+
+  test "No permite gastar mas aura de la disponible" {
+    const auraInicial = partida.aura()
+
+    assert.that(!partida.gastarAura(auraInicial + 1))
+    assert.equals(auraInicial, partida.aura())
+  }
+}
+
+describe "Aura pasiva" {
+  test "La generacion pasiva suma 25 soles" {
+    const auraInicial = partida.aura()
+
+    partida.generarAuraPasiva()
+
+    assert.equals(auraInicial + 25, partida.aura())
+
+    // Restauramos el valor para no afectar otros tests.
+    assert.that(partida.gastarAura(25))
+    assert.equals(auraInicial, partida.aura())
+  }
+}
+
+describe "Costos de los Chads" {
+  test "La nuez cuesta 50, el lanzador 100 y el girasol 50" {
+    assert.equals(50, tipoChadMuro.costo())
+    assert.equals(100, tipoChadLanzador.costo())
+    assert.equals(50, tipoChadOmnisciente.costo())
+  }
+}
+
+describe "Costo al plantar" {
+  test "Plantar un Chad Muro descuenta 50 soles" {
+    const auraInicial = partida.aura()
+    const posicion = game.at(10, 0)
+    const cartaMuro = new Carta(
+      image = "murachadfase1.png",
+      position = game.at(3, 5),
+      tipoChad = tipoChadMuro
+    )
+
+    partida.sumarAura(50)
+    seleccion.elegirChad(cartaMuro)
+    seleccion.plantarEn(posicion)
+
+    assert.equals(auraInicial, partida.aura())
+    assert.that(!jardin.chadPlantadoEn(posicion).estaMuerto())
+
+    jardin.quitar(jardin.chadPlantadoEn(posicion))
+    seleccion.elegirChad(sinCartaElegida)
+  }
+
+  test "No permite plantar si no alcanza el aura" {
+    const auraInicial = partida.aura()
+    const posicion = game.at(9, 0)
+    const cartaMuro = new Carta(
+      image = "murachadfase1.png",
+      position = game.at(3, 5),
+      tipoChad = tipoChadMuro
+    )
+
+    partida.gastarAura(auraInicial)
+    seleccion.elegirChad(cartaMuro)
+    seleccion.plantarEn(posicion)
+
+    assert.equals(0, partida.aura())
+    assert.that(jardin.chadPlantadoEn(posicion).estaMuerto())
+
+    partida.sumarAura(auraInicial)
+    seleccion.elegirChad(sinCartaElegida)
+  }
+
+  test "No cobra aura si la casilla ya esta ocupada" {
+    game.width(13)
+    game.height(6)
+
+    const auraInicial = partida.aura()
+    const posicion = game.at(10, 0)
+    const muro = tipoChadMuro.crearEn(posicion)
+
+    jardin.agregar(muro)
+    partida.sumarAura(50)
+
+    const auraDisponible = partida.aura()
+
+    const cartaMuro = new Carta(
+      image = "murachadfase1.png",
+      position = game.at(3, 5),
+      tipoChad = tipoChadMuro
+    )
+
+    seleccion.elegirChad(cartaMuro)
+    seleccion.plantarEn(posicion)
+
+    assert.equals(auraDisponible, partida.aura())
+    assert.equals(muro, jardin.chadPlantadoEn(posicion))
+
+    jardin.quitar(muro)
+    seleccion.elegirChad(sinCartaElegida)
+
+    assert.that(partida.gastarAura(50))
+    assert.equals(auraInicial, partida.aura())
+  }
+}
+
+describe "Proyectil" {
+  test "Avanza una casilla si no hay Normies adelante" {
+    game.width(13)
+    game.height(6)
+    const disparo = new Proyectil(
+      position = game.at(5, 4),
+      danio = 20
+    )
+
+    proyectiles.agregar(disparo)
+    disparo.avanzar()
+
+    assert.equals(6, disparo.position().x())
+
+    proyectiles.quitar(disparo)
+  }
+
+  test "Daña al Normie y desaparece al impactar" {
+    game.width(13)
+    game.height(6)
+    const normie = new NormieComun(
+      position = game.at(6, 3),
+      vida = 100,
+      danio = 20
+    )
+
+    const disparo = new Proyectil(
+      position = game.at(5, 3),
+      danio = 20
+    )
+
+    invasion.agregar(normie)
+    proyectiles.agregar(disparo)
+
+    assert.equals(normie, invasion.normieEn(game.at(6, 3)))
+    assert.equals(6, disparo.position().right(1).x())
+
+    disparo.avanzar()
+
+    assert.that(!proyectiles.todos().contains(disparo))
+    assert.equals(80, normie.vida())
+
+    invasion.quitar(normie)
+  }
+}
+
+describe "Invasion" {
+  test "Encuentra un Normie en la posicion indicada" {
+    const normie = new NormieComun(
+      position = game.at(11, 4),
+      vida = 100,
+      danio = 20
+    )
+
+    invasion.agregar(normie)
+
+    assert.equals(normie, invasion.normieEn(game.at(11, 4)))
+
+    invasion.quitar(normie)
+  }
+}
+
+describe "Menu de Cartas" {
+  test "Buscar una carta en una posicion vacia devuelve sinCartaElegida" {
+    assert.equals(
+      sinCartaElegida,
+      menuDeCartas.chadEn(game.at(0, 0))
+    )
   }
 }

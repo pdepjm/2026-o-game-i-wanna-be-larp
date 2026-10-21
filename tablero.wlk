@@ -3,6 +3,7 @@ import wollok.game.*
 import chads.*
 import menuCartas.*
 import archivo_jardin.*
+<<<<<<< HEAD
 
 object partida {
   var vidas = 3
@@ -16,16 +17,21 @@ object partida {
   method sinVidas() = vidas == 0
 }
 
+=======
+import partida_manager.*
+import proyectiles.*
+>>>>>>> origin/develop
 
 //Para evitar el uso de NULL
 object nada {
   method recibirDanio(cantidad) { }
   method estaMuerto() = true
+  method recibirA(normie) { normie.pasar()}
 }
 
 
 object seleccion {
-    var cartaElegida = null
+    var cartaElegida = sinCartaElegida
 
   method habilitarSeleccion(posicion){
 
@@ -51,23 +57,35 @@ object seleccion {
   }
 
   method plantarEn(posicion) {
+<<<<<<< HEAD
     if ((cartaElegida != null) && jardin.chadPlantadoEn(posicion).estaMuerto()) {
       
+=======
+    if (cartaElegida.esCarta() &&
+        jardin.chadPlantadoEn(posicion).estaMuerto() &&
+        partida.gastarAura(cartaElegida.costo())) {
+>>>>>>> origin/develop
       jardin.agregar(cartaElegida.crearChadEn(posicion))
       escenario.reordenar()
-
-
     }
   }
 }
 
 object escenario {
-  method reordenar() {
-    const todos = jardin.plantasEnJardin() + invasion.todos()
-    const ordenados = todos.sortedBy({ a, b => a.position().y() > b.position().y() })
-    ordenados.forEach({ visual =>
-      game.removeVisual(visual)
-      game.addVisual(visual)
-    })
-  }
+method reordenar() {
+  const todos = jardin.plantasEnJardin() + invasion.todos()
+  const ordenados = todos.sortedBy({ a, b =>
+    a.position().y() > b.position().y()
+  })
+
+  ordenados.forEach({ visual =>
+    game.removeVisual(visual)
+    game.addVisual(visual)
+  })
+
+  proyectiles.todos().forEach({ proyectil =>
+    game.removeVisual(proyectil)
+    game.addVisual(proyectil)
+  })
+}
 }
