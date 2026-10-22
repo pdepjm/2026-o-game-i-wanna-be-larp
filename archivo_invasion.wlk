@@ -14,24 +14,6 @@ object invasion {
     game.removeVisual(normie)
   }
 
-<<<<<<< HEAD
-   method primerNormieEnFila(posy){
-
-    return normies.findOrDefault({normie => (normie.position().y() == posy)},nada)
-
-  }
-
-   method avanzar_invasion(){
-
-        normies.forEach({ normie => 
-    normie.avanzar()}) 
-
-   }
-
-
-
-  method todos() = normies
-=======
   method normieMasCercanoDelanteDe(posicion) =
     normies.filter({ n =>
       n.position().y() == posicion.y() &&
@@ -58,13 +40,8 @@ object invasion {
     nada
   )
   
->>>>>>> origin/develop
 }
 
 
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop

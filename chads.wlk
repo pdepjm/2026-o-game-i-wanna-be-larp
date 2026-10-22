@@ -131,11 +131,14 @@ class ChadHielo inherits Chad {
 
   override method image() = "chad_hielo.png"
 
-  override method actuar() {
-    const objetivo = invasion.primerNormieEnFila(position.y())
-    if (objetivo != null && !objetivo.estaMuerto()) {
-      objetivo.recibirDanio(danio)
-    }
+ override method actuar() {
+    const objetivo = invasion.normieMasCercanoDelanteDe(position)
+    
+    objetivo.ifNotNil({ normie =>
+      if (!normie.estaMuerto()) {
+        normie.recibirDanio(danio)
+      }
+    })
   }
 
   override method recibirA(normie) {

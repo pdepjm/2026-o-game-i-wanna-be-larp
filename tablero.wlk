@@ -3,24 +3,8 @@ import wollok.game.*
 import chads.*
 import menuCartas.*
 import archivo_jardin.*
-<<<<<<< HEAD
-
-object partida {
-  var vidas = 3
-
-  method vidas() = vidas
-
-  method perderVida() {
-    vidas -= 1
-  }
-
-  method sinVidas() = vidas == 0
-}
-
-=======
 import partida_manager.*
 import proyectiles.*
->>>>>>> origin/develop
 
 //Para evitar el uso de NULL
 object nada {
@@ -57,14 +41,9 @@ object seleccion {
   }
 
   method plantarEn(posicion) {
-<<<<<<< HEAD
-    if ((cartaElegida != null) && jardin.chadPlantadoEn(posicion).estaMuerto()) {
-      
-=======
     if (cartaElegida.esCarta() &&
         jardin.chadPlantadoEn(posicion).estaMuerto() &&
         partida.gastarAura(cartaElegida.costo())) {
->>>>>>> origin/develop
       jardin.agregar(cartaElegida.crearChadEn(posicion))
       escenario.reordenar()
     }
