@@ -9,13 +9,12 @@ import partida_manager.*
 
 class Normie {
   var property position
-  var vida 
-  var estaAtacando = false  
+  var property vida
+  var estaAtacando = false
   var frenado = false
-  const danio
+  const property danio
   
 
-  method vida() = vida
   method estaMuerto() = vida <= 0
 
    method recibirDanio(cantidad) {
@@ -47,6 +46,8 @@ class Normie {
     jardin.chadPlantadoEn(siguiente).recibirA(self)
   }
 
+
+
   method avanzar() {
     const siguiente = position.left(1)
     
@@ -76,7 +77,7 @@ class Normie {
   method llegoALaCasa() = position.x() == 0 
 }
 
-class NormieComun inherits Normie{
+class NormieComun inherits Normie {
 
   override method image() {
     if (!estaAtacando) return "normieNormal.png"
@@ -90,6 +91,30 @@ class NormieComun inherits Normie{
 
 }
 
+class NormieRapido inherits Normie {
 
+  override method image() {
+    if (!estaAtacando) return "normieRapido.png"
+    else return "normieRapidoAttack.png"
+  }
 
+  override method atacar(chad) {
+    estaAtacando = true
+    super(chad)
+  }
 
+}
+
+class NormieTanque inherits Normie {
+
+  override method image() {
+    if (!estaAtacando) return "normieTanque.png"
+    else return "normieTanqueAttack.png"
+  }
+
+  override method atacar(chad) {
+    estaAtacando = true
+    super(chad)
+  }
+
+}

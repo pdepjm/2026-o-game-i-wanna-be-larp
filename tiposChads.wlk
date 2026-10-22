@@ -20,10 +20,37 @@ object tipoChadLanzador{
 
 }
 
-object tipoChadOmnisciente{
-    method costo() = 50
-    method image() = "chad_omnisciente.png"
+object tipoChadOmnisciente {
+  method costo() = 50
+  method image() = "chad_omnisciente.png"
 
-    method crearEn(pos) = new ChadOmnisciente(position = pos,vida = 100,vidaMaxima = 100.0,recursosGenerados = 25)
+  method crearEn(pos) = new ChadOmnisciente(
+    position = pos,
+    vida = 100,
+    vidaMaxima = 100.0,
+    recursosGenerados = 25
+  )
+} 
 
+object tipoChadExplosivo {
+  method costo() = 150 // o el costo asignado si lo usan en la carta
+  method image() = "chad_explosivo.png"
+
+  method crearEn(pos) = new ChadExplosivo(
+    position = pos,
+    vida = 1,
+    vidaMaxima = 1.0
+  )
+}
+
+object tipoChadHielo {
+  method costo() = 175 // o el costo asignado si lo usan en la carta
+  method image() = "chad_hielo.png"
+
+  method crearEn(pos) = new ChadHielo(
+    position = pos,
+    vida = 120,
+    vidaMaxima = 120.0,
+    danio = 15
+  )
 }
