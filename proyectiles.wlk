@@ -31,6 +31,10 @@ class Proyectil {
 }
 }
 
+
+
+
+
 object proyectiles {
   const activos = []
 

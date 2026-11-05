@@ -2,6 +2,7 @@
 object partida {
   var aura = 50
   var vidas = 3
+  const auraPasiva = 25
 
   method vidas() = vidas
   method aura() = aura
@@ -32,7 +33,16 @@ object partida {
     return false
   }
 
+  method habilitarGeneracionAura(){
+
+    game.onTick(12000, "auraPasiva", {
+    self.generarAuraPasiva()
+  })
+
+
+  }
+
   method generarAuraPasiva() {
-  self.sumarAura(25)
+  self.sumarAura(auraPasiva)
   }
 }

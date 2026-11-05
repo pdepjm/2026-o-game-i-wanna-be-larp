@@ -11,7 +11,18 @@ object spawnerDeNormies{
 
     method yRandom() = new Range(start = 0,end = jardin.limiteAltoJardin()).anyOne()
 
+
+    method habilitarSpawner(){
+
+             game.onTick(10000,"spawnear normies",{
+            self.spawnearNormie()
+
+  })        
+
+    }
+
     method spawnearNormie(){
+
 
         invasion.agregar(self.normieNuevo())
 

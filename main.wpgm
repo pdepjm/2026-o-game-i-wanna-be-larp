@@ -28,6 +28,9 @@ program ChadsVsNormies {
 
   invasion.agregar(tipoNormieComun.crearEn(game.at(12, 2)))
 
+  spawnerDeNormies.habilitarSpawner()
+  partida.habilitarGeneracionAura()
+  
   //si hay una carta seleccionable en la posicion clickeada, se selecciona esa carta
 
   game.onClickDo({ posicion =>
@@ -55,9 +58,7 @@ program ChadsVsNormies {
     })
   })
 
-  game.onTick(12000, "auraPasiva", {
-    partida.generarAuraPasiva()
-  })
+ 
 
   game.onClickDo({posicion => 
   
@@ -68,10 +69,7 @@ program ChadsVsNormies {
   
   })
 
-  game.onTick(10000,"spawnear normies",{
-    spawnerDeNormies.spawnearNormie()
-
-  })
+  
   
   game.start()
 }

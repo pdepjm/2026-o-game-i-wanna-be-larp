@@ -12,7 +12,7 @@ object tipoChadMuro{
 }
 
 object tipoChadLanzador{
-    method costo() = 100
+    method costo() = 10
     method image() = "chadprime.png"
 
     method crearEn(pos) = new ChadLanzador(position = pos,vida = 100,vidaMaxima = 100.0, danio = 20)
