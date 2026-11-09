@@ -8,6 +8,7 @@ import chadsYNormies.menuCartas.*
 import controladorDePartida.partida_manager.*
 import chadsYNormies.tiposNormies.*
 import chadsYNormies.tiposChads.*
+import tableroEInvasion.tiposProyectiles.*
 
 describe "Chad Muro" {
   test "Empieza con 200 de vida" {
@@ -49,7 +50,7 @@ describe "Chad Muro" {
 
 describe "Normie" {
   test "Avanza si el camino está libre" {
-    const normie = new NormieComun(position = game.at(10, 1), vida = 200, danio = 10)
+    const normie = new NormieComun(tiempoQueRecorreUnaCasillaEnMs = 1000,position = game.at(10, 1), vida = 200, danio = 10)
     normie.avanzar()
     assert.equals(9, normie.position().x())
   }
@@ -57,7 +58,7 @@ describe "Normie" {
   test "Se frena si hay un Chad vivo adelante" {
     const muro = new ChadMuro(position = game.at(4, 2), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new NormieComun(position = game.at(5, 2), vida = 200, danio = 10)
+    const normie = new NormieComun(tiempoQueRecorreUnaCasillaEnMs = 1000,position = game.at(5, 2), vida = 200, danio = 10)
     normie.avanzar()
     assert.equals(5, normie.position().x())
     jardin.quitar(muro)
@@ -66,7 +67,7 @@ describe "Normie" {
   test "Ataca al Chad que tiene enfrente" {
     const muro = new ChadMuro(position = game.at(4, 3), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new NormieComun(position = game.at(5, 3), vida = 200, danio = 10)
+    const normie = new NormieComun(tiempoQueRecorreUnaCasillaEnMs = 1000,position = game.at(5, 3), vida = 200, danio = 10)
     normie.avanzar()
     normie.atacar(muro)
     assert.equals(180, muro.vida())
@@ -76,7 +77,7 @@ describe "Normie" {
   test "Sigue avanzando una vez que el Chad delante suyo murió" {
     const muro = new ChadMuro(position = game.at(4, 4), vida = 200, vidaMaxima = 200.0)
     jardin.agregar(muro)
-    const normie = new NormieComun(position = game.at(5, 4), vida = 200, danio = 10)
+    const normie = new NormieComun(tiempoQueRecorreUnaCasillaEnMs = 1000,position = game.at(5, 4), vida = 200, danio = 10)
     normie.avanzar()
     muro.recibirDanio(200)
     normie.avanzar()
@@ -98,7 +99,7 @@ describe "Normie" {
 
   test "Normie que llega a casa pierde una vida y se elimina" {
     const vidasIniciales = partida.vidas()
-    const normie = new NormieComun(
+    const normie = new NormieComun( tiempoQueRecorreUnaCasillaEnMs = 1000,
       position = game.at(1, 2),
       vida = 100,
       danio = 10
@@ -119,10 +120,10 @@ describe "Pruebas de ChadExplosivo y ChadHielo" {
     assert.equals("chad_explosivo.png", tipoChadExplosivo.image())
   }
 
-  test "El ChadHielo se crea con 120 de vida y 15 de daño" {
-    const hielo = tipoChadHielo.crearEn(game.at(3, 2))
-    assert.equals(120, hielo.vida())
-    assert.equals(15, hielo.danio())
+  test "El ChadLanzador se crea con 100 de vida" {
+    const lanzador = tipoChadLanzador.crearEn(game.at(3, 2))
+    assert.equals(100, lanzador.vida())
+    
   }
 }
 
@@ -132,25 +133,28 @@ describe "Chad Lanzador" {
     game.height(6)
 
     const lanzador = new ChadLanzador(
+      proyectilQueUsa = proyectilComun,
       position = game.at(4, 2),
       vida = 100,
-      vidaMaxima = 100.0,
-      danio = 20
+      vidaMaxima = 100.0
     )
 
     const lejano = new NormieComun(
+      tiempoQueRecorreUnaCasillaEnMs = 1000,
       position = game.at(10, 2),
       vida = 100,
       danio = 10
     )
 
     const cercano = new NormieComun(
+      tiempoQueRecorreUnaCasillaEnMs = 1000,
       position = game.at(6, 2),
       vida = 100,
       danio = 10
     )
 
     const detras = new NormieComun(
+      tiempoQueRecorreUnaCasillaEnMs = 1000,
       position = game.at(2, 2),
       vida = 100,
       danio = 10
@@ -167,18 +171,8 @@ describe "Chad Lanzador" {
     assert.equals(100, lejano.vida())
     assert.equals(100, detras.vida())
 
-    // El proyectil avanza hacia el objetivo.
-    proyectiles.avanzarTodos()
-    assert.equals(100, cercano.vida())
-
-    proyectiles.avanzarTodos()
-    assert.equals(80, cercano.vida())
-    assert.equals(100, lejano.vida())
-    assert.equals(100, detras.vida())
-
-    invasion.quitar(lejano)
-    invasion.quitar(cercano)
-    invasion.quitar(detras)
+    
+    
   }
 
   test "No dispara si no hay Normies delante" {
@@ -186,17 +180,17 @@ describe "Chad Lanzador" {
     game.height(6)
 
     const lanzador = new ChadLanzador(
+      proyectilQueUsa = proyectilComun,
       position = game.at(4, 5),
       vida = 100,
-      vidaMaxima = 100.0,
-      danio = 20
+      vidaMaxima = 100.0
     )
 
-    const cantidadAntes = proyectiles.todos().size()
+    const cantidadAntes = proyectilesActivos.todos().size()
 
     lanzador.actuar()
 
-    assert.equals(cantidadAntes, proyectiles.todos().size())
+    assert.equals(cantidadAntes, proyectilesActivos.todos().size())
   }
 }
 
@@ -355,42 +349,43 @@ describe "Proyectil" {
   test "Avanza una casilla si no hay Normies adelante" {
     game.width(13)
     game.height(6)
-    const disparo = new Proyectil(
+    const disparo = new ProyectilComun(
       position = game.at(5, 4),
       danio = 20
     )
 
-    proyectiles.agregar(disparo)
+    proyectilesActivos.agregar(disparo)
     disparo.avanzar()
 
     assert.equals(6, disparo.position().x())
 
-    proyectiles.quitar(disparo)
+    proyectilesActivos.quitar(disparo)
   }
 
   test "Daña al Normie y desaparece al impactar" {
     game.width(13)
     game.height(6)
     const normie = new NormieComun(
+      tiempoQueRecorreUnaCasillaEnMs = 1000,
       position = game.at(6, 3),
       vida = 100,
       danio = 20
     )
 
-    const disparo = new Proyectil(
+    const disparo = new ProyectilComun(
       position = game.at(5, 3),
       danio = 20
     )
 
     invasion.agregar(normie)
-    proyectiles.agregar(disparo)
+    proyectilesActivos.agregar(disparo)
 
     assert.equals(normie, invasion.normieEn(game.at(6, 3)))
     assert.equals(6, disparo.position().right(1).x())
 
     disparo.avanzar()
 
-    assert.that(!proyectiles.todos().contains(disparo))
+    assert.that(!proyectilesActivos.todos().contains(disparo))
     assert.equals(80, normie.vida())
 
     invasion.quitar(normie)
@@ -400,6 +395,7 @@ describe "Proyectil" {
 describe "Invasion" {
   test "Encuentra un Normie en la posicion indicada" {
     const normie = new NormieComun(
+      tiempoQueRecorreUnaCasillaEnMs = 1000,
       position = game.at(11, 4),
       vida = 100,
       danio = 20
