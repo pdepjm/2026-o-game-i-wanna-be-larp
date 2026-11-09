@@ -1,15 +1,20 @@
 import tablero.*
-
+import chadsYNormies.*
 
 object invasion {
   const normies = []
 
   method agregar(normie) {
+    
+    
     normies.add(normie)
     game.addVisual(normie)
+    normie.habilitarMovimiento()
+
   }
 
   method quitar(normie) {
+    normie.deshabilitarMovimiento()
     normies.remove(normie)
     game.removeVisual(normie)
   }
@@ -24,9 +29,7 @@ object invasion {
       { nada }
     )
 
-   method avanzar_invasion(){
-    normies.copy().forEach({ normie => normie.avanzar()})
-   }
+   
 
   method todos() = normies
 
@@ -41,7 +44,6 @@ object invasion {
   )
   
 }
-
 
 
 

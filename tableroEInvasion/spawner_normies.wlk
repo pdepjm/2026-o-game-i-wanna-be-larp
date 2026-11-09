@@ -1,11 +1,11 @@
-import normies.*
+import chadsYNormies.normies.*
 import archivo_jardin.*
-import tiposNormies.*
+import chadsYNormies.tiposNormies.*
 import archivo_invasion.*
 
 object spawnerDeNormies{
 
-    const normiesDisponibles = [tipoNormieComun]
+    const normiesDisponibles = [tipoNormieComun,tipoNormieRapido]
 
     method posRandom() = game.at(12,self.yRandom())
 

@@ -1,17 +1,25 @@
 import wollok.game.*
-import archivo_invasion.*
+import tableroEInvasion.archivo_invasion.*
+import tableroEInvasion.efectos.*
 
 class Proyectil {
   var property position
   const danio
-    method image() = "proyectil_chadlanzador.png"
+
+    method image() 
+
+    method impactarEn(normie){
+
+        normie.recibirDanio(danio)
+
+    }
 
     method impactarSiHayNormieEn(posicionImpacto) {
         const normie = invasion.normieEn(posicionImpacto)
 
         if (!normie.estaMuerto()) {
-            normie.recibirDanio(danio)
-            proyectiles.quitar(self)
+            self.impactarEn(normie)
+            proyectilesActivos.quitar(self)
             return true
         }
 
@@ -23,7 +31,7 @@ class Proyectil {
             const siguiente = position.right(1)
 
         if (siguiente.x() >= game.width()) {
-            proyectiles.quitar(self)
+            proyectilesActivos.quitar(self)
         } else if (!self.impactarSiHayNormieEn(siguiente)) {
             position = siguiente
         }
@@ -31,11 +39,33 @@ class Proyectil {
 }
 }
 
+class ProyectilComun inherits Proyectil{
+
+      override method image() = "proyectil_chadlanzador.png"
+
+
+} 
+
+class ProyectilFuego inherits Proyectil{
+
+      
+
+      override method image() = "proyectil_chadlanzador.png"
+
+      override method impactarEn(normie){
+
+            super(normie)
+
+            fuego.quemarNormie(normie)
+      }
+
+
+}
 
 
 
 
-object proyectiles {
+object proyectilesActivos {
   const activos = []
 
   method agregar(proyectil) {

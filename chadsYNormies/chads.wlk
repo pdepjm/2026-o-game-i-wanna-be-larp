@@ -1,17 +1,20 @@
+import controladorDePartida.partida_manager.*
 import wollok.game.*
-import tablero.*
-import partida_manager.*
-import archivo_jardin.*
-import archivo_invasion.*
-import proyectiles.*
+import tableroEInvasion.tablero.*
+import tableroEInvasion.archivo_jardin.*
+import tableroEInvasion.archivo_invasion.*
+import tableroEInvasion.proyectiles.*
+import tableroEInvasion.tiposProyectiles.*
 
 //archivo para definir las clases de los chads
 class Chad {
   var property position
-  var vida 
-  var vidaMaxima
+  var property vida 
+  var property vidaMaxima
 
-  method vida() = vida
+  const tiempoActuacion = game.tick(1500,{self.actuar()},false)
+
+ 
   method estaMuerto() = vida <= 0
 
   method recibirA(normie) //un chad recibe a un normie a su manera
@@ -19,6 +22,20 @@ class Chad {
   method actuar()
 
   method image()
+
+  method habilitarActuacion(){
+
+    tiempoActuacion.start()
+
+
+  }
+
+  method terminarActuacion(){
+
+    tiempoActuacion.stop()
+
+
+  }
 
   method recibirDanio(cantidad) {
     vida = vida - cantidad
@@ -59,15 +76,15 @@ class ChadMuro inherits Chad {
 
 // Defensor a distancia: busca al enemigo más próximo en su carril y le aplica daño
 class ChadLanzador inherits Chad {
-  const danio
+  const proyectilQueUsa
   override method image() = "chadprime.png" //nose cual imagen seria
 
   override method actuar() {
     const objetivo = invasion.normieMasCercanoDelanteDe(position)
 
     if (!objetivo.estaMuerto()) {
-      proyectiles.agregar(
-        new Proyectil(position = position, danio = danio)
+      proyectilesActivos.agregar(
+        proyectilQueUsa.crearEn(position)
       )
     }
   }
@@ -77,23 +94,36 @@ class ChadLanzador inherits Chad {
 
   }
 
+
 }
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {
-  const recursosGenerados
+const property recursosGenerados 
   var generandoAura = false
   var segundosDesdeUltimaGeneracion = new Range(start = 0, end = 9).anyOne()
 
+  
+
+
   override method image() {
-  if (generandoAura) {
-    return "chad_omnisciente_aura.png"
-  }
-  return "chad_omnisciente.png"
+    if (generandoAura) {
+      return "chad_omnisciente_aura.png"
+    }
+    return "chad_omnisciente.png"
   }
 
   override method actuar() {
-    generandoAura = false
+    segundosDesdeUltimaGeneracion += 1
+
+    if (segundosDesdeUltimaGeneracion >= 10) {
+      partida.sumarAura(recursosGenerados)
+      segundosDesdeUltimaGeneracion = 0
+      generandoAura = true
+      game.schedule(500, {generandoAura = false})
+
+    }
+  
   }
 
   override method generarRecursos() {
@@ -110,3 +140,18 @@ class ChadOmnisciente inherits Chad {
     normie.frenarAnte(self)
   }
 }
+
+class ChadExplosivo inherits Chad {
+  const property danioExplosion = 150
+
+  override method image() = "chad_explosivo.png"
+
+  override method actuar() {}
+
+  override method recibirA(normie) {
+    // Al contacto, daña a los enemigos al frente y desaparece del jardín
+    normie.recibirDanio(danioExplosion)
+    jardin.quitar(self)
+  }
+}
+

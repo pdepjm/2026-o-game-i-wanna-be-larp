@@ -1,12 +1,10 @@
 import archivo_invasion.*
 import wollok.game.*
-import chads.*
-import menuCartas.*
+import chadsYNormies.chads.*
+import chadsYNormies.menuCartas.*
 import archivo_jardin.*
-import partida_manager.*
+import controladorDePartida.partida_manager.*
 import proyectiles.*
-
-
 
 //Para evitar el uso de NULL
 object nada {
@@ -64,7 +62,7 @@ method reordenar() {
     game.addVisual(visual)
   })
 
-  proyectiles.todos().forEach({ proyectil =>
+  proyectilesActivos.todos().forEach({ proyectil =>
     game.removeVisual(proyectil)
     game.addVisual(proyectil)
   })
