@@ -1,8 +1,8 @@
 import wollok.game.*
-import tablero.*
-import archivo_jardin.*
-import archivo_invasion.*
-import partida_manager.*
+import tableroEInvasion.tablero.*
+import tableroEInvasion.archivo_jardin.*
+import tableroEInvasion.archivo_invasion.*
+import controladorDePartida.partida_manager.*
 
 
 //archivo para definir las clases de los normies

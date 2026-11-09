@@ -1,5 +1,5 @@
-import chads.*
-import tiposChads.*
+import chadsYNormies.chads.*
+import chadsYNormies.tiposChads.*
 
 class Carta{
    //clase que representa las cartas a utilizar en el menu de selección de cartas

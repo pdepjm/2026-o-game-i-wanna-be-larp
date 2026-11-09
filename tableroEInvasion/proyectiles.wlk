@@ -1,5 +1,5 @@
 import wollok.game.*
-import archivo_invasion.*
+import tableroEInvasion.archivo_invasion.*
 
 class Proyectil {
   var property position

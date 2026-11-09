@@ -1,6 +1,6 @@
-import normies.*
+import chadsYNormies.normies.*
 import archivo_jardin.*
-import tiposNormies.*
+import chadsYNormies.tiposNormies.*
 import archivo_invasion.*
 
 object spawnerDeNormies{

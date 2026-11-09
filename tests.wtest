@@ -1,13 +1,13 @@
-import archivo_invasion.invasion
-import chads.*
-import normies.*
-import tablero.*
-import proyectiles.*
-import archivo_jardin.*
-import menuCartas.*
-import partida_manager.*
-import tiposNormies.*
-import tiposChads.*
+import tableroEInvasion.archivo_invasion.invasion
+import chadsYNormies.chads.*
+import chadsYNormies.normies.*
+import tableroEInvasion.tablero.*
+import tableroEInvasion.proyectiles.*
+import tableroEInvasion.archivo_jardin.*
+import chadsYNormies.menuCartas.*
+import controladorDePartida.partida_manager.*
+import chadsYNormies.tiposNormies.*
+import chadsYNormies.tiposChads.*
 
 describe "Chad Muro" {
   test "Empieza con 200 de vida" {

@@ -1,9 +1,9 @@
-import partida_manager.*
+import controladorDePartida.partida_manager.*
 import wollok.game.*
-import tablero.*
-import archivo_jardin.*
-import archivo_invasion.*
-import proyectiles.*
+import tableroEInvasion.tablero.*
+import tableroEInvasion.archivo_jardin.*
+import tableroEInvasion.archivo_invasion.*
+import tableroEInvasion.proyectiles.*
 
 //archivo para definir las clases de los chads
 class Chad {
