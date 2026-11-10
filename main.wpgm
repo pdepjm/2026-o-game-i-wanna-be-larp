@@ -11,6 +11,7 @@ import tableroEInvasion.archivo_invasion.*
 import cartel.*
 import tableroEInvasion.proyectiles.*
 import chadsYNormies.tiposNormies.*
+import laPala.*
 
 object menuInicio {
   method position() = game.at(0, 0)
@@ -29,6 +30,7 @@ object estadoPantalla {
       game.removeVisual(menuInicio)
 
       game.addVisual(cartel)
+      game.addVisual(laPala)
       menuDeCartas.mostrarMenu()
       contadorSoles.mostrar()
 
@@ -86,6 +88,9 @@ program ChadsVsNormies {
     // Interacción con el cartel
     if (posicion == cartel.position()) {
       cartel.actuar()
+    }
+    if (posicion == laPala.position()) {
+      laPala.seleccionarPala()
     }
   }
 })

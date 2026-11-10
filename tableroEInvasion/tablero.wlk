@@ -5,6 +5,7 @@ import chadsYNormies.menuCartas.*
 import archivo_jardin.*
 import controladorDePartida.partida_manager.*
 import proyectiles.*
+import laPala.*
 
 //Para evitar el uso de NULL
 object nada {
@@ -22,6 +23,13 @@ object seleccion {
     if (menuDeCartas.hayCartaEn(posicion)) {
             
       self.elegirChad(menuDeCartas.chadEn(posicion))
+      laPala.deseleccionarPala()
+
+    } else if (!jardin.chadPlantadoEn(posicion).estaMuerto() && laPala.palaSeleccionada()) {
+      
+      //si la posicion es donde hay actualmente un chad, esta saca el chad en esa posicion
+      
+      jardin.quitar(jardin.chadPlantadoEn(posicion))
 
     } else if (posicion.x() >= jardin.limitePodadora() && posicion.x() <= jardin.limiteAnchoJardin() && posicion.y() <= jardin.limiteAltoJardin()) {
       
@@ -29,7 +37,7 @@ object seleccion {
       
       self.plantarEn(posicion)
 
-    }
+    } 
 
 
   }
