@@ -4,6 +4,14 @@ import chadsYNormies.*
 object invasion {
   const normies = []
 
+  method reiniciar() {
+    normies.copy().forEach({ normie => 
+      normie.deshabilitarMovimiento()
+      self.quitar(normie)  
+    })
+  }
+
+
   method agregar(normie) {
     
     

@@ -76,7 +76,7 @@ class ChadMuro inherits Chad {
 
 // Defensor a distancia: busca al enemigo más próximo en su carril y le aplica daño
 class ChadLanzador inherits Chad {
-  const proyectilQueUsa
+  const proyectilQueUsa = ProyectilComun
   override method image() = "chadprime.png" //nose cual imagen seria
 
   override method actuar() {

@@ -21,6 +21,11 @@ object spawnerDeNormies{
 
     }
 
+   method deshabilitarSpawner() {
+    try { game.removeTickEvent("spawnear normies") } catch e : Exception {}
+  }
+
+
     method spawnearNormie(){
 
 

@@ -78,6 +78,11 @@ object proyectilesActivos {
     game.removeVisual(proyectil)
   }
 
+  method reiniciar() {
+    activos.copy().forEach({ proyectil => self.quitar(proyectil) })
+  }
+
+
   method avanzarTodos() {
     activos.copy().forEach({ proyectil =>
       proyectil.avanzar()
