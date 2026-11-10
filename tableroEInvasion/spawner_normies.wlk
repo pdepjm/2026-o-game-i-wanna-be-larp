@@ -4,7 +4,7 @@ import chadsYNormies.tiposNormies.*
 import archivo_invasion.*
 
 object spawnerDeNormies{
-
+    var ratio = 15000
     const normiesDisponibles = [tipoNormieComun,tipoNormieRapido]
 
     method posRandom() = game.at(12,self.yRandom())
@@ -13,19 +13,22 @@ object spawnerDeNormies{
 
 
     method habilitarSpawner(){
-
-             game.onTick(10000,"spawnear normies",{
-            self.spawnearNormie()
-
-  })        
-
+         game.onTick(ratio,"spawnear normies",{
+         self.spawnearNormie()
+         self.actualizarRatio()
+         console.println(ratio)
+         game.removeTickEvent("spawnear normies")       
+         game.schedule(ratio, self.habilitarSpawner())
+        })
+        
     }
-
+    
+    method actualizarRatio(){
+       ratio = 300000/(game.currentTime()*0.0002+20)
+    }
     method spawnearNormie(){
 
-
         invasion.agregar(self.normieNuevo())
-
 
     }
 

@@ -27,7 +27,7 @@ object seleccion {
 
     } else if (!jardin.chadPlantadoEn(posicion).estaMuerto() && laPala.palaSeleccionada()) {
       
-      //si la posicion es donde hay actualmente un chad, esta saca el chad en esa posicion
+      //si la posicion es donde hay actualmente un chad, y esta la pala seleccionada, esta saca el chad en esa posicion
       
       jardin.quitar(jardin.chadPlantadoEn(posicion))
 

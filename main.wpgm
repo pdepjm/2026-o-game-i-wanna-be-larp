@@ -33,8 +33,7 @@ object estadoPantalla {
       game.addVisual(laPala)
       menuDeCartas.mostrarMenu()
       contadorSoles.mostrar()
-
-      invasion.agregar(tipoNormieComun.crearEn(game.at(12, 2)))
+    
       
 
       // Movimiento de proyectiles

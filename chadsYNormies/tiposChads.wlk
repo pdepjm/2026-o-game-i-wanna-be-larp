@@ -6,7 +6,7 @@ import tableroEInvasion.tiposProyectiles.*
 
 
 object tipoChadMuro{
-    method costo() = 10
+    method costo() = 25
     method image() = "murachadfase1.png"
 
     method crearEn(pos) = new ChadMuro(position = pos,vida = 200,vidaMaxima = 200.0)
@@ -14,7 +14,7 @@ object tipoChadMuro{
 }
 
 object tipoChadLanzador{
-    method costo() = 10
+    method costo() = 50
     method image() = "chadprime.png"
 
     method crearEn(pos) = new ChadLanzador(proyectilQueUsa = proyectilFuego, position = pos,vida = 100,vidaMaxima = 100.0)
@@ -27,7 +27,7 @@ object tipoChadLanzador{
 
 
 object tipoChadOmnisciente {
-  method costo() = 10
+  method costo() = 25
   method image() = "chad_omnisciente.png"
 
   method crearEn(pos) = new ChadOmnisciente(
@@ -39,7 +39,7 @@ object tipoChadOmnisciente {
 } 
 
 object tipoChadExplosivo {
-  method costo() = 150 // o el costo asignado si lo usan en la carta
+  method costo() = 100 // o el costo asignado si lo usan en la carta
   method image() = "chad_explosivo.png"
 
   method crearEn(pos) = new ChadExplosivo(

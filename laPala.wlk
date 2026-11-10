@@ -12,7 +12,4 @@ object laPala {
     method deseleccionarPala() {
         palaSeleccionada = false
     }
-    method sacarChad(posicion){
-
-    }
 }
