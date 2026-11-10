@@ -1,5 +1,5 @@
 import tablero.*
-import chadsYNormies.chads.*
+
 
 
 object jardin {
@@ -15,16 +15,18 @@ object jardin {
 
   const plantasEnJardin = []
 
+  method reiniciar(){
+    plantasEnJardin.copy().forEach({ planta => self.quitar(planta)  })
+  }
+
   method plantasEnJardin() = plantasEnJardin
 
   method agregar(planta) {
     plantasEnJardin.add(planta)
     game.addVisual(planta)
-    planta.habilitarActuacion()
   }
 
   method quitar(planta) {
-    planta.terminarActuacion()
     plantasEnJardin.remove(planta)
     game.removeVisual(planta)
   }
@@ -33,4 +35,10 @@ object jardin {
     { p => p.position().x() == posicion.x() && p.position().y() == posicion.y() },
     nada
   )
+
+  // 👇 AGREGAR ESTO EN archivo_jardin.wlk:
+  method hacerActuarAChads() {
+    plantasEnJardin.forEach({ chad => chad.actuar() })
+  }
 }
+

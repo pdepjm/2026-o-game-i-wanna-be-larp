@@ -76,7 +76,7 @@ class ChadMuro inherits Chad {
 
 // Defensor a distancia: busca al enemigo más próximo en su carril y le aplica daño
 class ChadLanzador inherits Chad {
-  const proyectilQueUsa
+  const proyectilQueUsa = ProyectilComun
   override method image() = "chadprime.png" //nose cual imagen seria
 
   override method actuar() {
@@ -99,12 +99,9 @@ class ChadLanzador inherits Chad {
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {
-const property recursosGenerados 
+  const property recursosGenerados 
   var generandoAura = false
-  var segundosDesdeUltimaGeneracion = new Range(start = 0, end = 9).anyOne()
-
-  
-
+  var segundosDesdeUltimaGeneracion = 0
 
   override method image() {
     if (generandoAura) {
@@ -114,16 +111,7 @@ const property recursosGenerados
   }
 
   override method actuar() {
-    segundosDesdeUltimaGeneracion += 1
-
-    if (segundosDesdeUltimaGeneracion >= 10) {
-      partida.sumarAura(recursosGenerados)
-      segundosDesdeUltimaGeneracion = 0
-      generandoAura = true
-      game.schedule(500, {generandoAura = false})
-
-    }
-  
+    generandoAura = false
   }
 
   override method generarRecursos() {
@@ -133,6 +121,8 @@ const property recursosGenerados
       partida.sumarAura(recursosGenerados)
       segundosDesdeUltimaGeneracion = 0
       generandoAura = true
+    } else {
+      generandoAura = false // Al ciclo siguiente vuelve a su imagen normal
     }
   }
 

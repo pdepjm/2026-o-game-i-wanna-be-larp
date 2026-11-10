@@ -82,6 +82,8 @@ object menuDeCartas{
             })
             menuMostrado = true
         }
+
+        
     }
 
     method hayCartaEn(posicion) = cartasDisponibles.any({chad => chad.position() == posicion}) 
@@ -90,5 +92,8 @@ object menuDeCartas{
     sinCartaElegida
     )
 
+    method reiniciar() {
+    menuMostrado = false
+  }
 
 }
