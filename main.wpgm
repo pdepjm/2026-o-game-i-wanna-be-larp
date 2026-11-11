@@ -1,16 +1,17 @@
-import tableroEInvasion.spawner_normies.*
-import controladorDePartida.contador_aura.*
 import wollok.game.*
-import tableroEInvasion.tablero.*
+import controladorDePartida.contador_aura.*
+import controladorDePartida.partida_manager.*
 import chadsYNormies.chads.*
 import chadsYNormies.normies.*
+import chadsYNormies.tiposNormies.*
 import chadsYNormies.menuCartas.*
-import controladorDePartida.partida_manager.*
 import tableroEInvasion.archivo_jardin.*
 import tableroEInvasion.archivo_invasion.*
-import cartel.*
 import tableroEInvasion.proyectiles.*
-import chadsYNormies.tiposNormies.*
+import tableroEInvasion.spawner_normies.*
+import tableroEInvasion.tablero.*
+import cartel.*
+import menuOpciones.*
 
 object menuInicio {
   method position() = game.at(0, 0)
@@ -19,8 +20,32 @@ object menuInicio {
 
 object estadoPantalla {
   var iniciada = false
+  var opcionesAbiertas = false
 
   method partidaIniciada() = iniciada
+  method estaEnOpciones() = opcionesAbiertas
+
+  method mostrarOpciones() {
+    if(!opcionesAbiertas){
+      game.removeVisual(menuInicio)
+      game.addVisual(pantallaOpciones)
+
+      game.addVisual(valorMusica)
+      game.addVisual(valorEfectos)
+
+      opcionesAbiertas = true
+    }
+  }
+
+  method volverMenuInicio() {
+    game.removeVisual(pantallaOpciones)
+    game.removeVisual(valorMusica)
+    game.removeVisual(valorEfectos)
+
+    game.addVisual(menuInicio)
+
+    opcionesAbiertas = false
+  }
 
   method iniciarPartida() {
     if (!iniciada) {
@@ -65,19 +90,51 @@ program ChadsVsNormies {
 
   if (!estadoPantalla.partidaIniciada()) {
 
+    if(estadoPantalla.estaEnOpciones()){
+      
+      // Música: bajar volumen
+      if (posicion.x() == 5 && posicion.y() == 3) {
+        configuracionAudio.bajarMusica()
+
+      // Música: subir volumen
+      } else if (posicion.x() == 8 && posicion.y() == 3) {
+        configuracionAudio.subirMusica()
+
+      // Efectos: bajar volumen
+      } else if (posicion.x() == 5 && posicion.y() == 2) {
+        configuracionAudio.bajarEfectos()
+
+      // Efectos: subir volumen
+      } else if (posicion.x() == 8 && posicion.y() == 2) {
+        configuracionAudio.subirEfectos()
+
+      // Volver al menú principal
+      } else if (
+        posicion.x() >= 6 &&
+        posicion.x() <= 8 &&
+        posicion.y() <= 1
+      ) {
+        estadoPantalla.volverMenuInicio()
+      }
+
+    } else {
+
     // Botón Jugar
     if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 2) {
       estadoPantalla.iniciarPartida()
-
+  
     // Botón Opciones
-    } else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 1) {
-      console.println("Seleccionaste OPCIONES")
+    } 
+    else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 1) {
+      estadoPantalla.mostrarOpciones()
 
     // Botón Salir
-    } else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 0) {
-      console.println("Seleccionaste SALIR")
+    } 
+    else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 0) {
+      game.stop()
     }
-
+  }
+  
   } else {
 
     // Selección de cartas y plantación de Chads

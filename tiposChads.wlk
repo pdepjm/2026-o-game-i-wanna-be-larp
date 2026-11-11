@@ -1,4 +1,4 @@
-import chads.*
+/*import chadsYNormies.chads.*
 
 //archivo para la definicion de stats de los chads
 
@@ -12,7 +12,7 @@ object tipoChadMuro{
 }
 
 object tipoChadLanzador{
-    method costo() = 10
+    method costo() = 100
     method image() = "chadprime.png"
 
     method crearEn(pos) = new ChadLanzador(position = pos,vida = 100,vidaMaxima = 100.0, danio = 20)
@@ -27,3 +27,4 @@ object tipoChadOmnisciente{
     method crearEn(pos) = new ChadOmnisciente(position = pos,vida = 100,vidaMaxima = 100.0,recursosGenerados = 25)
 
 }
+*/
