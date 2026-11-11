@@ -123,10 +123,8 @@ object estadoPantalla {
         proyectilesActivos.avanzarTodos()
       })
 
-      // Acciones de los Chads
-      game.onTick(1500, "actuarChads", {
-        jardin.hacerActuarAChads()
-      })
+      
+    
 
       // Aura pasiva
       partida.habilitarGeneracionAura()

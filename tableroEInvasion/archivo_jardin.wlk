@@ -24,9 +24,11 @@ object jardin {
   method agregar(planta) {
     plantasEnJardin.add(planta)
     game.addVisual(planta)
+    planta.habilitarActuacion()
   }
 
   method quitar(planta) {
+    planta.terminarActuacion()
     plantasEnJardin.remove(planta)
     game.removeVisual(planta)
   }

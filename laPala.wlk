@@ -1,5 +1,5 @@
-import tablero.*
-import menuCartas.*
+import tableroEInvasion.tablero.*
+import chadsYNormies.menuCartas.*
 object laPala {
     method image() = "pala.png"
     var property position = game.at(11,game.height())

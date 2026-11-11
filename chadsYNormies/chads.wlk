@@ -99,9 +99,12 @@ class ChadLanzador inherits Chad {
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {
-  const property recursosGenerados 
+const property recursosGenerados 
   var generandoAura = false
-  var segundosDesdeUltimaGeneracion = 0
+  var segundosDesdeUltimaGeneracion = new Range(start = 0, end = 9).anyOne()
+
+  
+
 
   override method image() {
     if (generandoAura) {
@@ -111,17 +114,24 @@ class ChadOmnisciente inherits Chad {
   }
 
   override method actuar() {
-    self.generarRecursos()
-  }
-
-  override method generarRecursos() {
     segundosDesdeUltimaGeneracion += 1
+
     if (segundosDesdeUltimaGeneracion >= 10) {
       partida.sumarAura(recursosGenerados)
       segundosDesdeUltimaGeneracion = 0
       generandoAura = true
-    } else {
-      generandoAura = false // Al ciclo siguiente vuelve a su imagen normal
+      game.schedule(500, {generandoAura = false})
+
+    }
+  }
+
+  override method generarRecursos() {
+    segundosDesdeUltimaGeneracion += 1
+
+    if (segundosDesdeUltimaGeneracion >= 10) {
+      partida.sumarAura(recursosGenerados)
+      segundosDesdeUltimaGeneracion = 0
+      generandoAura = true
     }
   }
 

@@ -13,12 +13,15 @@ object spawnerDeNormies{
 
 
     method habilitarSpawner(){
+        
         game.onTick(ratio,"spawnear normies",{
         self.spawnearNormie()
         self.actualizarRatio()
         console.println(ratio)
         game.removeTickEvent("spawnear normies")       
         game.schedule(ratio, self.habilitarSpawner())
+
+        
       }) 
     }       
     
