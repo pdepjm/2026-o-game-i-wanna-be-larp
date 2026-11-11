@@ -10,7 +10,7 @@ object partida {
   method aura() = aura
 
   method reiniciar() {
-    aura = 50
+    aura = 100
     vidas = 3
   }
 

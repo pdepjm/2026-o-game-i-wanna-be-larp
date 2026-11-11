@@ -1,3 +1,4 @@
+import wollok.game.*
 import chadsYNormies.normies.*
 import archivo_jardin.*
 import chadsYNormies.tiposNormies.*
@@ -5,6 +6,7 @@ import archivo_invasion.*
 
 object spawnerDeNormies{
     var ratio = 15000
+    var segundosPasados = 0
 
     const normiesDisponibles = [tipoNormieComun,tipoNormieRapido]
 
@@ -19,6 +21,8 @@ object spawnerDeNormies{
         self.spawnearNormie()
         self.actualizarRatio()
         self.deshabilitarSpawner()     
+        console.println(ratio)
+        console.println(segundosPasados)
         game.schedule(ratio, self.habilitarSpawner())
       }) 
     }       
@@ -28,7 +32,16 @@ object spawnerDeNormies{
     }
 
     method actualizarRatio(){
-       ratio = 300000/(game.currentTime()*0.0002+20)      
+       ratio = 300000/(segundosPasados*0.2+20)      
+    }
+
+    method reiniciarRatio(){
+      ratio = 15000
+      segundosPasados = 0
+    }
+    
+    method pasarSegundo(){
+      segundosPasados+=1
     }
 
     method spawnearNormie(){

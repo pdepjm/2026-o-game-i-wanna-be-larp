@@ -1,3 +1,4 @@
+import tableroEInvasion.spawner_normies.*
 import tablero.*
 import chadsYNormies.*
 
@@ -9,6 +10,7 @@ object invasion {
       normie.deshabilitarMovimiento()
       self.quitar(normie)  
     })
+    spawnerDeNormies.reiniciarRatio()
   }
 
   method agregar(normie) {

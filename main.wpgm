@@ -84,7 +84,6 @@ object estadoPantalla {
     proyectilesActivos.reiniciar()
     menuDeCartas.reiniciar()
     partida.reiniciar()
-
     // 3. Volvemos a arrancar con todo fresco
     esGameOver = false
     iniciada = false
@@ -188,6 +187,10 @@ object estadoPantalla {
         proyectilesActivos.avanzarTodos()
       })
 
+      game.onTick(1000, "Pasar Segundo", {
+        spawnerDeNormies.pasarSegundo()
+      })
+
       pausaAbierta = false
     }
   }
@@ -210,6 +213,10 @@ object estadoPantalla {
         proyectilesActivos.avanzarTodos()
       })
 
+      game.onTick(1000, "Pasar Segundo", {
+        spawnerDeNormies.pasarSegundo()
+      })
+
 
       // Aura pasiva
       partida.habilitarGeneracionAura()
@@ -217,6 +224,8 @@ object estadoPantalla {
       // Aparición de Normies
       spawnerDeNormies.habilitarSpawner()
 
+      // Se pone el ratio de spawns de normies
+      spawnerDeNormies.reiniciarRatio()
     }
   }
 
