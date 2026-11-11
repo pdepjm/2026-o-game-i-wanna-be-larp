@@ -22,10 +22,6 @@ object tipoChadLanzador{
 
 }
 
-
-
-
-
 object tipoChadOmnisciente {
   method costo() = 25
   method image() = "chad_omnisciente.png"
