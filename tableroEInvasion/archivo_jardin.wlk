@@ -17,6 +17,18 @@ object jardin {
 
   method plantasEnJardin() = plantasEnJardin
 
+  method detenerActuaciones() {
+  plantasEnJardin.forEach({ planta =>
+    planta.terminarActuacion()
+    })
+  }
+
+  method reanudarActuaciones() {
+    plantasEnJardin.forEach({ planta =>
+      planta.habilitarActuacion()
+      })
+  }
+
   method agregar(planta) {
     plantasEnJardin.add(planta)
     game.addVisual(planta)
@@ -33,4 +45,11 @@ object jardin {
     { p => p.position().x() == posicion.x() && p.position().y() == posicion.y() },
     nada
   )
+
+  method limpiar() {
+    plantasEnJardin.copy().forEach({ planta =>
+      self.quitar(planta)
+    })
+  }
+
 }

@@ -14,26 +14,19 @@ object spawnerDeNormies{
 
     method habilitarSpawner(){
 
-             game.onTick(10000,"spawnear normies",{
-            self.spawnearNormie()
+            game.onTick(10000,"spawnear normies",{
+                self.spawnearNormie()
+        })        
+    }
 
-  })        
-
+    method deshabilitarSpawner() {
+        game.removeTickEvent("spawnear normies")
     }
 
     method spawnearNormie(){
-
-
         invasion.agregar(self.normieNuevo())
-
-
     }
-
     method normieNuevo() = (normiesDisponibles.anyOne()).crearEn(self.posRandom())
-
-    
-
-
 }
 
 

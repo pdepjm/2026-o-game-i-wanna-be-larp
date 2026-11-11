@@ -48,6 +48,11 @@ object seleccion {
       escenario.reordenar()
     }
   }
+
+  method reiniciar() {
+    cartaElegida = sinCartaElegida
+  }
+
 }
 
 object escenario {

@@ -36,13 +36,21 @@ object partida {
   method habilitarGeneracionAura(){
 
     game.onTick(12000, "auraPasiva", {
-    self.generarAuraPasiva()
-  })
+      self.generarAuraPasiva()
+    })
+  }
 
-
+  method deshabilitarGeneracionAura() {
+    game.removeTickEvent("auraPasiva")
   }
 
   method generarAuraPasiva() {
   self.sumarAura(auraPasiva)
   }
+
+  method reiniciar() {
+    aura = 50
+    vidas = 3
+  }
+
 }

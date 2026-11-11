@@ -12,6 +12,7 @@ import tableroEInvasion.spawner_normies.*
 import tableroEInvasion.tablero.*
 import cartel.*
 import menuOpciones.*
+import menuPausa.*
 
 object menuInicio {
   method position() = game.at(0, 0)
@@ -21,6 +22,8 @@ object menuInicio {
 object estadoPantalla {
   var iniciada = false
   var opcionesAbiertas = false
+  var pausaAbierta = false
+  var confirmacionAbierta = false
 
   method partidaIniciada() = iniciada
   method estaEnOpciones() = opcionesAbiertas
@@ -45,6 +48,64 @@ object estadoPantalla {
     game.addVisual(menuInicio)
 
     opcionesAbiertas = false
+  }
+
+  method estaPausada() = pausaAbierta
+
+  method abrirPausa() {
+    if (!pausaAbierta) {
+
+      // Detener los movimientos de los Normies
+      invasion.detenerMovimientos()
+
+      // Detener las acciones de los Chads
+      jardin.detenerActuaciones()
+
+      // Detener la generación de aura
+      partida.deshabilitarGeneracionAura()
+
+      // Detener la aparición de nuevos Normies
+      spawnerDeNormies.deshabilitarSpawner()
+
+      // Detener el movimiento de los proyectiles
+      game.removeTickEvent("avanzarProyectiles")
+
+      // Mostrar el menú de pausa
+      game.addVisual(pantallaPausa)
+      game.addVisual(valorMusica)
+      game.addVisual(valorEfectos)
+
+      pausaAbierta = true
+    }
+  }
+
+  method cerrarPausa() {
+    if (pausaAbierta) {
+
+      // Ocultar el menú de pausa
+      game.removeVisual(pantallaPausa)
+      game.removeVisual(valorMusica)
+      game.removeVisual(valorEfectos)
+
+      // Reanudar los movimientos de los Normies
+      invasion.reanudarMovimientos()
+
+      // Reanudar las acciones de los Chads
+      jardin.reanudarActuaciones()
+
+      // Reanudar la generación de aura
+      partida.habilitarGeneracionAura()
+
+      // Reanudar la aparición de Normies
+      spawnerDeNormies.habilitarSpawner()
+
+      // Reanudar el movimiento de los proyectiles
+      game.onTick(250, "avanzarProyectiles", {
+        proyectilesActivos.avanzarTodos()
+      })
+
+      pausaAbierta = false
+    }
   }
 
   method iniciarPartida() {
@@ -74,7 +135,75 @@ object estadoPantalla {
 
     }
   }
+
+  method estaEnConfirmacion() = confirmacionAbierta
+
+  method mostrarConfirmacion() {
+    if (!confirmacionAbierta) {
+      // Ocultar el menú de pausa y sus textos
+      game.removeVisual(pantallaPausa)
+      game.removeVisual(valorMusica)
+      game.removeVisual(valorEfectos)
+
+      // Mostrar la pantalla de confirmación
+      game.addVisual(pantallaConfirmacion)
+
+      confirmacionAbierta = true
+    }
+  }
+
+  method cerrarConfirmacion() {
+    if (confirmacionAbierta) {
+      // Ocultar la confirmación
+      game.removeVisual(pantallaConfirmacion)
+
+      // Recuperar el menú de pausa
+      game.addVisual(pantallaPausa)
+      game.addVisual(valorMusica)
+      game.addVisual(valorEfectos)
+
+      confirmacionAbierta = false
+    }
+  }
+
+  method volverAlMenuPrincipal() {
+    if (iniciada && confirmacionAbierta) {
+
+      // Detener los temporizadores globales
+      game.removeTickEvent("avanzarProyectiles")
+      partida.deshabilitarGeneracionAura()
+      spawnerDeNormies.deshabilitarSpawner()
+
+      // Vaciar los elementos de la partida
+      invasion.limpiar()
+      jardin.limpiar()
+      proyectilesActivos.limpiar()
+
+      // Ocultar los elementos de interfaz
+      menuDeCartas.ocultarMenu()
+      contadorSoles.ocultar()
+
+      // Restablecer la selección y los valores
+      seleccion.reiniciar()
+      partida.reiniciar()
+
+      // Eliminar los elementos visuales restantes
+      game.removeVisual(cartel)
+      game.removeVisual(pantallaConfirmacion)
+      game.removeVisual(valorMusica)
+      game.removeVisual(valorEfectos)
+
+      // Regresar al menú principal
+      game.addVisual(menuInicio)
+
+      iniciada = false
+      pausaAbierta = false
+      confirmacionAbierta = false
+    }
+  }
+
 }
+
 
 program ChadsVsNormies {
   game.title("Chads vs Normies")
@@ -88,63 +217,130 @@ program ChadsVsNormies {
 
   game.onClickDo({ posicion =>
 
-  if (!estadoPantalla.partidaIniciada()) {
+    if (!estadoPantalla.partidaIniciada()) {
 
-    if(estadoPantalla.estaEnOpciones()){
-      
-      // Música: bajar volumen
-      if (posicion.x() == 5 && posicion.y() == 3) {
-        configuracionAudio.bajarMusica()
+      if (estadoPantalla.estaEnOpciones()) {
 
-      // Música: subir volumen
-      } else if (posicion.x() == 8 && posicion.y() == 3) {
-        configuracionAudio.subirMusica()
+        // Música: bajar volumen
+        if (posicion.x() == 5 && posicion.y() == 3) {
+          configuracionAudio.bajarMusica()
 
-      // Efectos: bajar volumen
-      } else if (posicion.x() == 5 && posicion.y() == 2) {
-        configuracionAudio.bajarEfectos()
+        // Música: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 3) {
+          configuracionAudio.subirMusica()
 
-      // Efectos: subir volumen
-      } else if (posicion.x() == 8 && posicion.y() == 2) {
-        configuracionAudio.subirEfectos()
+        // Efectos: bajar volumen
+        } else if (posicion.x() == 5 && posicion.y() == 2) {
+          configuracionAudio.bajarEfectos()
 
-      // Volver al menú principal
-      } else if (
-        posicion.x() >= 6 &&
-        posicion.x() <= 8 &&
-        posicion.y() <= 1
-      ) {
-        estadoPantalla.volverMenuInicio()
+        // Efectos: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 2) {
+          configuracionAudio.subirEfectos()
+
+        // Volver al menú principal
+        } else if (
+          posicion.x() >= 6 &&
+          posicion.x() <= 8 &&
+          posicion.y() <= 1
+        ) {
+          estadoPantalla.volverMenuInicio()
+        }
+
+      } else {
+
+        // Botón Jugar
+        if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 2) {
+          estadoPantalla.iniciarPartida()
+
+        // Botón Opciones
+        } else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 1) {
+          estadoPantalla.mostrarOpciones()
+
+        // Botón Salir
+        } else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 0) {
+          game.stop()
+        }
       }
 
     } else {
 
-    // Botón Jugar
-    if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 2) {
-      estadoPantalla.iniciarPartida()
-  
-    // Botón Opciones
-    } 
-    else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 1) {
-      estadoPantalla.mostrarOpciones()
+    if (estadoPantalla.estaEnConfirmacion()) {
 
-    // Botón Salir
-    } 
-    else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 0) {
-      game.stop()
+      // Sí: regresar al menú principal
+      if (posicion.x() == 4 && posicion.y() == 1) {
+        estadoPantalla.volverAlMenuPrincipal()
+      // No: regresar al menú de pausa
+      } else if (posicion.x() == 8 && posicion.y() == 1) { 
+        estadoPantalla.cerrarConfirmacion()
+      }
+    } else if (estadoPantalla.estaPausada()) {
+
+        // Música: bajar volumen
+        if (posicion.x() == 5 && posicion.y() == 3) {
+          configuracionAudio.bajarMusica()
+
+        // Música: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 3) {
+          configuracionAudio.subirMusica()
+
+        // Efectos: bajar volumen
+        } else if (posicion.x() == 5 && posicion.y() == 2) {
+          configuracionAudio.bajarEfectos()
+
+        // Efectos: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 2) {
+          configuracionAudio.subirEfectos()
+
+        // Cerrar pausa mediante el botón dibujado
+        } else if (posicion.x() == 0 && posicion.y() == 0) {
+          estadoPantalla.cerrarPausa()
+
+        // Botón Atrás
+        } else if (
+          posicion.x() >= 4 &&
+          posicion.x() <= 5 &&
+          posicion.y() == 0
+        ) {
+          estadoPantalla.cerrarPausa()
+
+        // Botón Salir: mostrar confirmación
+        } else if (
+          posicion.x() >= 7 &&
+          posicion.x() <= 8 &&
+          posicion.y() == 0
+        ) {
+          estadoPantalla.mostrarConfirmacion()
+        }
+
+      // Abrir pausa mediante el botón dibujado
+      } else if (posicion.x() == 0 && posicion.y() == 0) {
+        estadoPantalla.abrirPausa()
+
+      } else {
+
+        // Selección y plantación de Chads
+        seleccion.habilitarSeleccion(posicion)
+
+        if (posicion == cartel.position()) {
+          cartel.actuar()
+        }
+      }
     }
-  }
-  
-  } else {
+  })
 
-    // Selección de cartas y plantación de Chads
-    seleccion.habilitarSeleccion(posicion)
-
-    // Interacción con el cartel
-    if (posicion == cartel.position()) {
-      cartel.actuar()
+  // Atajo de teclado para pausar y reanudar
+  keyboard.p().onPressDo({
+    if (
+      estadoPantalla.partidaIniciada() &&
+      !estadoPantalla.estaEnConfirmacion()
+    ) {
+      if (estadoPantalla.estaPausada()) {
+        estadoPantalla.cerrarPausa()
+      } else {
+        estadoPantalla.abrirPausa()
+      }
     }
-  }
-})
+  })
+
   game.start()
 }

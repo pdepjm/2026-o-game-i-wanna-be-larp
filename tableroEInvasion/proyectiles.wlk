@@ -85,4 +85,10 @@ object proyectilesActivos {
   }
 
   method todos() = activos
+
+  method limpiar() {
+    activos.copy().forEach({ proyectil =>
+      self.quitar(proyectil)
+    })
+  }
 }

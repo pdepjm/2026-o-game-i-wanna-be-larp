@@ -90,5 +90,10 @@ object menuDeCartas{
     sinCartaElegida
     )
 
-
+    method ocultarMenu() {
+        cartasDisponibles.forEach({ cartaChad =>
+            game.removeVisual(cartaChad)
+        })
+        menuMostrado = false
+    }
 }
