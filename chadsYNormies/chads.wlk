@@ -111,12 +111,11 @@ class ChadOmnisciente inherits Chad {
   }
 
   override method actuar() {
-    generandoAura = false
+    self.generarRecursos()
   }
 
   override method generarRecursos() {
     segundosDesdeUltimaGeneracion += 1
-
     if (segundosDesdeUltimaGeneracion >= 10) {
       partida.sumarAura(recursosGenerados)
       segundosDesdeUltimaGeneracion = 0
