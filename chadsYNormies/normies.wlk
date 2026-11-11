@@ -16,8 +16,12 @@ class Normie {
   const property danio
   
   
-  const movimiento = game.tick(tiempoQueRecorreUnaCasillaEnMs,{self.avanzar() escenario.reordenar()}, false)
-
+  const movimiento = game.tick(tiempoQueRecorreUnaCasillaEnMs, {
+    if (partida.enCurso()) {
+      self.avanzar()
+      escenario.reordenar()
+    }
+  }, false)
 
 
   

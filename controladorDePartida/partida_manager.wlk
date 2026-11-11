@@ -1,11 +1,18 @@
+import wollok.game.*
 
 object partida {
-  var aura = 50
+  var aura = 100
   var vidas = 3
   const auraPasiva = 25
+  var property alPerder = { }
 
   method vidas() = vidas
   method aura() = aura
+
+  method reiniciar() {
+    aura = 50
+    vidas = 3
+  }
 
   method perderVida() {
     if (vidas > 0) {
@@ -13,7 +20,7 @@ object partida {
       console.println("Perdiste una vida. Vidas restantes: " + vidas)
       if (vidas == 0) {
         console.println("PERDISTE BRO")
-        game.stop()
+        alPerder.apply()
       }
     }
   }
@@ -47,10 +54,7 @@ object partida {
   method generarAuraPasiva() {
   self.sumarAura(auraPasiva)
   }
-
-  method reiniciar() {
-    aura = 50
-    vidas = 3
-  }
+  
+  method enCurso() = vidas > 0
 
 }

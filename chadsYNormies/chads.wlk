@@ -123,7 +123,6 @@ const property recursosGenerados
       game.schedule(500, {generandoAura = false})
 
     }
-  
   }
 
   override method generarRecursos() {

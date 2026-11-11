@@ -5,6 +5,7 @@ import chadsYNormies.chads.*
 import chadsYNormies.normies.*
 import chadsYNormies.tiposNormies.*
 import chadsYNormies.menuCartas.*
+import chadsYNormies.foxy.*
 import tableroEInvasion.archivo_jardin.*
 import tableroEInvasion.archivo_invasion.*
 import tableroEInvasion.proyectiles.*
@@ -13,19 +14,102 @@ import tableroEInvasion.tablero.*
 import cartel.*
 import menuOpciones.*
 import menuPausa.*
+import laPala.*
 
 object menuInicio {
   method position() = game.at(0, 0)
   method image() = "MenuDeInicio.png"
 }
 
+object pantallaGameOver {
+  method position() = game.at(0, 0)
+  method image() = "gameOver.png"
+}
+
 object estadoPantalla {
   var iniciada = false
+  var esGameOver = false
   var opcionesAbiertas = false
   var pausaAbierta = false
   var confirmacionAbierta = false
 
-  method partidaIniciada() = iniciada
+  method partidaIniciada() = iniciada && !esGameOver
+  method esGameOver() = esGameOver
+
+  // Frena todos los ticks activos del juego:
+  method detenerTicks() {
+    try { game.removeTickEvent("avanzarProyectiles") } catch e : Exception {}
+    try { game.removeTickEvent("actuarChads") } catch e : Exception {}
+    try { game.removeTickEvent("auraPasiva") } catch e : Exception {}
+    try { game.removeTickEvent("spawnear normies") } catch e : Exception {}
+    try { spawnerDeNormies.deshabilitarSpawner() } catch e : Exception {}
+  }
+
+  method perderPartida() {
+    esGameOver = true
+
+    // 1. Detenemos los relojes del juego:
+    self.detenerTicks()
+
+    // 2. Limpiamos las listas del juego inmediatamente:
+    jardin.reiniciar()
+    invasion.reiniciar()
+    proyectilesActivos.reiniciar()
+
+    // 3. Removemos todo lo que esté en pantalla (para que nada se vea por detrás):
+    game.allVisuals().copy().forEach({ visual =>
+      game.removeVisual(visual)
+    })
+
+    // 4. Mostramos la pantalla de Game Over completa:
+    game.addVisual(pantallaGameOver)
+
+    // 5. Barrido de seguridad para eliminar cualquier rezagado del tick actual:
+    game.schedule(100, {
+      game.allVisuals().copy().forEach({ visual =>
+        if (visual != pantallaGameOver) {
+          game.removeVisual(visual)
+        }
+      })
+    })
+  }
+
+  method reiniciarPartida() {
+    // 1. Quitamos la pantalla de Game Over
+    try { game.removeVisual(pantallaGameOver) } catch e : Exception {}
+
+    // 2. Reiniciamos listas, cartas y partida
+    jardin.reiniciar()
+    invasion.reiniciar()
+    proyectilesActivos.reiniciar()
+    menuDeCartas.reiniciar()
+    partida.reiniciar()
+
+    // 3. Volvemos a arrancar con todo fresco
+    esGameOver = false
+    iniciada = false
+    self.iniciarPartida()
+  }
+
+  method volverAlMenu() {
+    // 1. Quitamos la pantalla de Game Over
+    try { game.removeVisual(pantallaGameOver) } catch e : Exception {}
+
+       self.detenerTicks()
+
+
+    // 2. Reiniciamos listas, cartas y partida
+    jardin.reiniciar()
+    invasion.reiniciar()
+    proyectilesActivos.reiniciar()
+    menuDeCartas.reiniciar()
+    partida.reiniciar()
+
+    // 3. Volvemos al menú principal
+    esGameOver = false
+    iniciada = false
+    game.addVisual(menuInicio)
+  }
   method estaEnOpciones() = opcionesAbiertas
 
   method mostrarOpciones() {
@@ -112,13 +196,13 @@ object estadoPantalla {
     if (!iniciada) {
       iniciada = true
 
-      game.removeVisual(menuInicio)
+      try { game.removeVisual(menuInicio) } catch e : Exception {}
 
       game.addVisual(cartel)
+      game.addVisual(laPala)
       menuDeCartas.mostrarMenu()
       contadorSoles.mostrar()
 
-      invasion.agregar(tipoNormieComun.crearEn(game.at(12, 2)))
       
 
       // Movimiento de proyectiles
@@ -215,10 +299,35 @@ program ChadsVsNormies {
 
   game.addVisual(menuInicio)
 
+  // Vinculamos la pérdida de vidas con Game Over:
+  partida.alPerder({ estadoPantalla.perderPartida() })
+
+  // Atajos de teclado:
+  keyboard.r().onPressDo({
+    if (estadoPantalla.esGameOver()) {
+      estadoPantalla.reiniciarPartida()
+    }
+  })
+
+  keyboard.m().onPressDo({
+    if (estadoPantalla.esGameOver()) {
+      estadoPantalla.volverAlMenu()
+    }
+  })
+
   game.onClickDo({ posicion =>
-
-    if (!estadoPantalla.partidaIniciada()) {
-
+    if (estadoPantalla.esGameOver()) {
+      // Clics sobre los botones de piedra en la pantalla de Game Over:
+      // 1. Botón REINTENTAR (lado izquierdo abajo):
+      if (posicion.x() >= 3 && posicion.x() <= 6 && posicion.y() <= 1) {
+        estadoPantalla.reiniciarPartida()
+      }
+      // 2. Botón MENÚ PRINCIPAL (lado derecho abajo):
+      if (posicion.x() >= 7 && posicion.x() <= 10 && posicion.y() <= 1) {
+        estadoPantalla.volverAlMenu()
+      }
+    } else if (!estadoPantalla.partidaIniciada()) {
+      // Clics en menú de inicio:
       if (estadoPantalla.estaEnOpciones()) {
 
         // Música: bajar volumen
@@ -324,6 +433,9 @@ program ChadsVsNormies {
         if (posicion == cartel.position()) {
           cartel.actuar()
         }
+        if (posicion == laPala.position()) {
+        laPala.seleccionarPala()
+        }
       }
     }
   })
@@ -341,6 +453,9 @@ program ChadsVsNormies {
       }
     }
   })
-
+  // Si presionas la J, un foxy te viene a atacar sin ninguna razon aparente
+  keyboard.j().onPressDo { 
+    elFoxyQueNoInvitoNadie.jumpscare() 
+  }
   game.start()
 }

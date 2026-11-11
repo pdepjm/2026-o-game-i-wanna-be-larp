@@ -15,6 +15,10 @@ object jardin {
 
   const plantasEnJardin = []
 
+  method reiniciar(){
+    plantasEnJardin.copy().forEach({ planta => self.quitar(planta)  })
+  }
+
   method plantasEnJardin() = plantasEnJardin
 
   method detenerActuaciones() {
