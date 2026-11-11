@@ -17,4 +17,8 @@ object contadorSoles {
     game.addVisual(iconoSoles)
     game.addVisual(valorSoles)
   }
+  method ocultar() {
+  game.removeVisual(iconoSoles)
+  game.removeVisual(valorSoles)
+  }
 }

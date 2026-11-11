@@ -209,7 +209,7 @@ describe "Chad Omnisciente" {
     assert.equals(auraInicial, partida.aura())
   }
 
-  test "Cambia de imagen al generar aura y vuelve a la normal" {
+  test "Cambia de imagen al generar aura y luego de un cierto tiempo vuelve a la normal" {
     const auraInicial = partida.aura()
     const girasol = tipoChadOmnisciente.crearEn(game.at(0, 0))
 
@@ -220,10 +220,8 @@ describe "Chad Omnisciente" {
     })
 
     assert.equals("chad_omnisciente_aura.png", girasol.image())
-
-    girasol.actuar()
-
-    assert.equals("chad_omnisciente.png", girasol.image())
+  
+    game.schedule(500, {assert.equals("chad_omnisciente.png", girasol.image())})
 
     assert.that(partida.gastarAura(25))
     assert.equals(auraInicial, partida.aura())

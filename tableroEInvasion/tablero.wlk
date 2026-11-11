@@ -30,7 +30,7 @@ object seleccion {
       //si la posicion es donde hay actualmente un chad, y esta la pala seleccionada, esta saca el chad en esa posicion
       
       jardin.quitar(jardin.chadPlantadoEn(posicion))
-
+      
     } else if (posicion.x() >= jardin.limitePodadora() && posicion.x() <= jardin.limiteAnchoJardin() && posicion.y() <= jardin.limiteAltoJardin()) {
       
       //si la posicion donde se clickea no excede los limites del jardin, se pasa a plantar el chad
@@ -56,6 +56,11 @@ object seleccion {
       escenario.reordenar()
     }
   }
+
+  method reiniciar() {
+    cartaElegida = sinCartaElegida
+  }
+
 }
 
 object escenario {

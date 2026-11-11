@@ -82,7 +82,6 @@ object proyectilesActivos {
     activos.copy().forEach({ proyectil => self.quitar(proyectil) })
   }
 
-
   method avanzarTodos() {
     activos.copy().forEach({ proyectil =>
       proyectil.avanzar()
@@ -90,4 +89,10 @@ object proyectilesActivos {
   }
 
   method todos() = activos
+
+  method limpiar() {
+    activos.copy().forEach({ proyectil =>
+      self.quitar(proyectil)
+    })
+  }
 }

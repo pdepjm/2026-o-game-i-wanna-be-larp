@@ -1,3 +1,4 @@
+import tableroEInvasion.spawner_normies.*
 import tablero.*
 import chadsYNormies.*
 
@@ -9,8 +10,8 @@ object invasion {
       normie.deshabilitarMovimiento()
       self.quitar(normie)  
     })
+    spawnerDeNormies.reiniciarRatio()
   }
-
 
   method agregar(normie) {
     
@@ -50,9 +51,23 @@ object invasion {
     },
     nada
   )
-  
+  method detenerMovimientos() {
+  normies.forEach({ normie =>
+    normie.deshabilitarMovimiento()
+  })
+  }
+
+  method reanudarMovimientos() {
+    normies.forEach({ normie =>
+      normie.habilitarMovimiento()
+    })
+  }
+
+  method limpiar() {
+    normies.copy().forEach({ normie =>
+      self.quitar(normie)
+    })
+  }
 }
-
-
 
 

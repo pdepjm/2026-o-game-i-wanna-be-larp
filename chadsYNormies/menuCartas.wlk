@@ -94,6 +94,12 @@ object menuDeCartas{
 
     method reiniciar() {
     menuMostrado = false
-  }
+    }
 
+    method ocultarMenu() {
+        cartasDisponibles.forEach({ cartaChad =>
+            game.removeVisual(cartaChad)
+        })
+        menuMostrado = false
+    }
 }

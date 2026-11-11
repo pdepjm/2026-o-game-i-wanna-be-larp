@@ -1,7 +1,7 @@
 import wollok.game.*
 
 object partida {
-  var aura = 500
+  var aura = 100
   var vidas = 3
   const auraPasiva = 25
   var property alPerder = { }
@@ -10,7 +10,7 @@ object partida {
   method aura() = aura
 
   method reiniciar() {
-    aura = 50
+    aura = 100
     vidas = 3
   }
 
@@ -45,10 +45,14 @@ object partida {
     })
   }
 
+  method deshabilitarGeneracionAura() {
+    game.removeTickEvent("auraPasiva")
+  }
+
   method generarAuraPasiva() {
     self.sumarAura(auraPasiva)
   }
-
+  
   method enCurso() = vidas > 0
 
 }
