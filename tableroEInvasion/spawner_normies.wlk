@@ -25,13 +25,10 @@ object spawnerDeNormies{
         console.println(segundosPasados)
         game.schedule(ratio, self.habilitarSpawner())
 
-        
+
       }) 
     }       
     
-    method deshabilitarSpawner() {
-      try { game.removeTickEvent("spawnear normies") } catch e : Exception {}
-    }
 
     method actualizarRatio(){
        ratio = 300000/(segundosPasados*0.2+20)      

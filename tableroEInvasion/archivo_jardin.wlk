@@ -49,5 +49,12 @@ object jardin {
     { p => p.position().x() == posicion.x() && p.position().y() == posicion.y() },
     nada
   )
+
+  method limpiar() {
+    plantasEnJardin.copy().forEach({ planta =>
+      self.quitar(planta)
+    })
+  }
+
 }
 

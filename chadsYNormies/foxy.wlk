@@ -7,7 +7,7 @@ object elFoxyQueNoInvitoNadie {
   //
   method image() = "foxy-fnaf.gif"
   method jumpscare() {
-    var numero = 0.randomUpTo(20) 
+    const numero = 0.randomUpTo(20) 
     console.println(numero)
     if (numero >= 19) {
 		game.schedule(200, { => game.addVisual(self)  })

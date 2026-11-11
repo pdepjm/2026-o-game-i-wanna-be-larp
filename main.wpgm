@@ -187,10 +187,6 @@ object estadoPantalla {
         proyectilesActivos.avanzarTodos()
       })
 
-      game.onTick(1000, "Pasar Segundo", {
-        spawnerDeNormies.pasarSegundo()
-      })
-
       pausaAbierta = false
     }
   }
@@ -213,9 +209,7 @@ object estadoPantalla {
         proyectilesActivos.avanzarTodos()
       })
 
-      game.onTick(1000, "Pasar Segundo", {
-        spawnerDeNormies.pasarSegundo()
-      })
+      
 
 
       // Aura pasiva
@@ -465,5 +459,8 @@ program ChadsVsNormies {
   keyboard.j().onPressDo { 
     elFoxyQueNoInvitoNadie.jumpscare() 
   }
+  game.onTick(1000, "Pasar Segundo", {
+        spawnerDeNormies.pasarSegundo()
+  })
   game.start()
 }
