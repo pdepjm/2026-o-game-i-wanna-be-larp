@@ -1,7 +1,7 @@
 import wollok.game.*
 
 object partida {
-  var aura = 50
+  var aura = 500
   var vidas = 3
   const auraPasiva = 25
   var property alPerder = { }
