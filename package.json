@@ -1,9 +1,9 @@
 {
-    "name": "tp-game",
-    "version": "1.0.0",
+    "name": "chads-vs-normies",
+    "version": "0.1.0-alpha",
     "resourceFolder": "assets",
-    "wollokVersion": "4.2.3",
-    "author": "",
+  "wollokVersion": "4.2.3",
+    "author": "Team",
     "license": "ISC"
   }
   

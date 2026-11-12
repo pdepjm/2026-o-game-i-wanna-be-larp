@@ -1,0 +1,466 @@
+import wollok.game.*
+import controladorDePartida.contador_aura.*
+import controladorDePartida.partida_manager.*
+import chadsYNormies.chads.*
+import chadsYNormies.normies.*
+import chadsYNormies.tiposNormies.*
+import chadsYNormies.menuCartas.*
+import chadsYNormies.foxy.*
+import tableroEInvasion.archivo_jardin.*
+import tableroEInvasion.archivo_invasion.*
+import tableroEInvasion.proyectiles.*
+import tableroEInvasion.spawner_normies.*
+import tableroEInvasion.tablero.*
+import cartel.*
+import menuOpciones.*
+import menuPausa.*
+import laPala.*
+
+object menuInicio {
+  method position() = game.at(0, 0)
+  method image() = "MenuDeInicio.png"
+}
+
+object pantallaGameOver {
+  method position() = game.at(0, 0)
+  method image() = "gameOver.png"
+}
+
+object estadoPantalla {
+  var iniciada = false
+  var esGameOver = false
+  var opcionesAbiertas = false
+  var pausaAbierta = false
+  var confirmacionAbierta = false
+
+  method partidaIniciada() = iniciada && !esGameOver
+  method esGameOver() = esGameOver
+
+  // Frena todos los ticks activos del juego:
+  method detenerTicks() {
+    try { game.removeTickEvent("avanzarProyectiles") } catch e : Exception {}
+    try { game.removeTickEvent("actuarChads") } catch e : Exception {}
+    try { game.removeTickEvent("auraPasiva") } catch e : Exception {}
+    try { game.removeTickEvent("spawnear normies") } catch e : Exception {}
+    try { spawnerDeNormies.deshabilitarSpawner() } catch e : Exception {}
+  }
+
+  method perderPartida() {
+    esGameOver = true
+
+    // 1. Detenemos los relojes del juego:
+    self.detenerTicks()
+
+    // 2. Limpiamos las listas del juego inmediatamente:
+    jardin.reiniciar()
+    invasion.reiniciar()
+    proyectilesActivos.reiniciar()
+
+    // 3. Removemos todo lo que esté en pantalla (para que nada se vea por detrás):
+    game.allVisuals().copy().forEach({ visual =>
+      game.removeVisual(visual)
+    })
+
+    // 4. Mostramos la pantalla de Game Over completa:
+    game.addVisual(pantallaGameOver)
+
+    // 5. Barrido de seguridad para eliminar cualquier rezagado del tick actual:
+    game.schedule(100, {
+      game.allVisuals().copy().forEach({ visual =>
+        if (visual != pantallaGameOver) {
+          game.removeVisual(visual)
+        }
+      })
+    })
+  }
+
+  method reiniciarPartida() {
+    // 1. Quitamos la pantalla de Game Over
+    try { game.removeVisual(pantallaGameOver) } catch e : Exception {}
+
+    // 2. Reiniciamos listas, cartas y partida
+    jardin.reiniciar()
+    invasion.reiniciar()
+    proyectilesActivos.reiniciar()
+    menuDeCartas.reiniciar()
+    partida.reiniciar()
+    // 3. Volvemos a arrancar con todo fresco
+    esGameOver = false
+    iniciada = false
+    self.iniciarPartida()
+  }
+
+  method volverAlMenu() {
+    // 1. Quitamos la pantalla de Game Over
+    try { game.removeVisual(pantallaGameOver) } catch e : Exception {}
+
+       self.detenerTicks()
+
+
+    // 2. Reiniciamos listas, cartas y partida
+    jardin.reiniciar()
+    invasion.reiniciar()
+    proyectilesActivos.reiniciar()
+    menuDeCartas.reiniciar()
+    partida.reiniciar()
+
+    // 3. Volvemos al menú principal
+    esGameOver = false
+    iniciada = false
+    game.addVisual(menuInicio)
+  }
+  method estaEnOpciones() = opcionesAbiertas
+
+  method mostrarOpciones() {
+    if(!opcionesAbiertas){
+      game.removeVisual(menuInicio)
+      game.addVisual(pantallaOpciones)
+
+      game.addVisual(valorMusica)
+      game.addVisual(valorEfectos)
+
+      opcionesAbiertas = true
+    }
+  }
+
+  method volverMenuInicio() {
+    game.removeVisual(pantallaOpciones)
+    game.removeVisual(valorMusica)
+    game.removeVisual(valorEfectos)
+
+    game.addVisual(menuInicio)
+
+    opcionesAbiertas = false
+  }
+
+  method estaPausada() = pausaAbierta
+
+  method abrirPausa() {
+    if (!pausaAbierta) {
+
+      // Detener los movimientos de los Normies
+      invasion.detenerMovimientos()
+
+      // Detener las acciones de los Chads
+      jardin.detenerActuaciones()
+
+      // Detener la generación de aura
+      partida.deshabilitarGeneracionAura()
+
+      // Detener la aparición de nuevos Normies
+      spawnerDeNormies.deshabilitarSpawner()
+
+      // Detener el movimiento de los proyectiles
+      game.removeTickEvent("avanzarProyectiles")
+
+      // Mostrar el menú de pausa
+      game.addVisual(pantallaPausa)
+      game.addVisual(valorMusica)
+      game.addVisual(valorEfectos)
+
+      pausaAbierta = true
+    }
+  }
+
+  method cerrarPausa() {
+    if (pausaAbierta) {
+
+      // Ocultar el menú de pausa
+      game.removeVisual(pantallaPausa)
+      game.removeVisual(valorMusica)
+      game.removeVisual(valorEfectos)
+
+      // Reanudar los movimientos de los Normies
+      invasion.reanudarMovimientos()
+
+      // Reanudar las acciones de los Chads
+      jardin.reanudarActuaciones()
+
+      // Reanudar la generación de aura
+      partida.habilitarGeneracionAura()
+
+      // Reanudar la aparición de Normies
+      spawnerDeNormies.habilitarSpawner()
+
+      // Reanudar el movimiento de los proyectiles
+      game.onTick(250, "avanzarProyectiles", {
+        proyectilesActivos.avanzarTodos()
+      })
+
+      pausaAbierta = false
+    }
+  }
+
+  method iniciarPartida() {
+    if (!iniciada) {
+      iniciada = true
+
+      try { game.removeVisual(menuInicio) } catch e : Exception {}
+
+      game.addVisual(cartel)
+      game.addVisual(laPala)
+      menuDeCartas.mostrarMenu()
+      contadorSoles.mostrar()
+
+      
+
+      // Movimiento de proyectiles
+      game.onTick(250, "avanzarProyectiles", {
+        proyectilesActivos.avanzarTodos()
+      })
+
+      
+
+
+      // Aura pasiva
+      partida.habilitarGeneracionAura()
+
+      // Spawner de Normies
+      spawnerDeNormies.habilitarSpawner()
+
+      // Se pone el ratio de spawns de normies
+      spawnerDeNormies.reiniciarRatio()
+    }
+  }
+
+  method estaEnConfirmacion() = confirmacionAbierta
+
+  method mostrarConfirmacion() {
+    if (!confirmacionAbierta) {
+      // Ocultar el menú de pausa y sus textos
+      game.removeVisual(pantallaPausa)
+      game.removeVisual(valorMusica)
+      game.removeVisual(valorEfectos)
+
+      // Mostrar la pantalla de confirmación
+      game.addVisual(pantallaConfirmacion)
+
+      confirmacionAbierta = true
+    }
+  }
+
+  method cerrarConfirmacion() {
+    if (confirmacionAbierta) {
+      // Ocultar la confirmación
+      game.removeVisual(pantallaConfirmacion)
+
+      // Recuperar el menú de pausa
+      game.addVisual(pantallaPausa)
+      game.addVisual(valorMusica)
+      game.addVisual(valorEfectos)
+
+      confirmacionAbierta = false
+    }
+  }
+
+  method volverAlMenuPrincipal() {
+    if (iniciada && confirmacionAbierta) {
+
+      // Detener los temporizadores globales
+      game.removeTickEvent("avanzarProyectiles")
+      partida.deshabilitarGeneracionAura()
+      spawnerDeNormies.deshabilitarSpawner()
+
+      // Vaciar los elementos de la partida
+      invasion.limpiar()
+      jardin.limpiar()
+      proyectilesActivos.limpiar()
+
+      // Ocultar los elementos de interfaz
+      menuDeCartas.ocultarMenu()
+      contadorSoles.ocultar()
+
+      // Restablecer la selección y los valores
+      seleccion.reiniciar()
+      partida.reiniciar()
+
+      // Eliminar los elementos visuales restantes
+      game.removeVisual(cartel)
+      game.removeVisual(pantallaConfirmacion)
+      game.removeVisual(valorMusica)
+      game.removeVisual(valorEfectos)
+
+      // Regresar al menú principal
+      game.addVisual(menuInicio)
+
+      iniciada = false
+      pausaAbierta = false
+      confirmacionAbierta = false
+    }
+  }
+
+}
+
+
+program ChadsVsNormies {
+  game.title("Chads vs Normies")
+  game.width(13)
+  game.height(6)
+  game.cellSize(60)
+
+  game.boardGround("Patiochadfinal.png")
+  game.addVisual(menuInicio)
+
+  // Vinculamos la pérdida de vidas con Game Over:
+  partida.alPerder({ estadoPantalla.perderPartida() })
+
+  // Atajos de teclado:
+  keyboard.r().onPressDo({
+    if (estadoPantalla.esGameOver()) {
+      estadoPantalla.reiniciarPartida()
+    }
+  })
+
+  keyboard.m().onPressDo({
+    if (estadoPantalla.esGameOver()) {
+      estadoPantalla.volverAlMenu()
+    }
+  })
+
+  game.onClickDo({ posicion =>
+    if (estadoPantalla.esGameOver()) {
+      // Clics sobre los botones de piedra en la pantalla de Game Over:
+      // 1. Botón REINTENTAR (lado izquierdo abajo):
+      if (posicion.x() >= 3 && posicion.x() <= 6 && posicion.y() <= 1) {
+        estadoPantalla.reiniciarPartida()
+      }
+      // 2. Botón MENÚ PRINCIPAL (lado derecho abajo):
+      if (posicion.x() >= 7 && posicion.x() <= 10 && posicion.y() <= 1) {
+        estadoPantalla.volverAlMenu()
+      }
+    } else if (!estadoPantalla.partidaIniciada()) {
+      // Clics en menú de inicio:
+      if (estadoPantalla.estaEnOpciones()) {
+
+        // Música: bajar volumen
+        if (posicion.x() == 5 && posicion.y() == 3) {
+          configuracionAudio.bajarMusica()
+
+        // Música: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 3) {
+          configuracionAudio.subirMusica()
+
+        // Efectos: bajar volumen
+        } else if (posicion.x() == 5 && posicion.y() == 2) {
+          configuracionAudio.bajarEfectos()
+
+        // Efectos: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 2) {
+          configuracionAudio.subirEfectos()
+
+        // Volver al menú principal
+        } else if (
+          posicion.x() >= 6 &&
+          posicion.x() <= 8 &&
+          posicion.y() <= 1
+        ) {
+          estadoPantalla.volverMenuInicio()
+        }
+
+      } else {
+
+        // Botón Jugar
+        if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 2) {
+          estadoPantalla.iniciarPartida()
+
+        // Botón Opciones
+        } else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 1) {
+          estadoPantalla.mostrarOpciones()
+
+        // Botón Salir
+        } else if (posicion.x() >= 6 && posicion.x() <= 7 && posicion.y() == 0) {
+          game.stop()
+        }
+      }
+
+    } else {
+
+    if (estadoPantalla.estaEnConfirmacion()) {
+
+      // Sí: regresar al menú principal
+      if (posicion.x() == 4 && posicion.y() == 1) {
+        estadoPantalla.volverAlMenuPrincipal()
+      // No: regresar al menú de pausa
+      } else if (posicion.x() == 8 && posicion.y() == 1) { 
+        estadoPantalla.cerrarConfirmacion()
+      }
+    } else if (estadoPantalla.estaPausada()) {
+
+        // Música: bajar volumen
+        if (posicion.x() == 5 && posicion.y() == 3) {
+          configuracionAudio.bajarMusica()
+
+        // Música: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 3) {
+          configuracionAudio.subirMusica()
+
+        // Efectos: bajar volumen
+        } else if (posicion.x() == 5 && posicion.y() == 2) {
+          configuracionAudio.bajarEfectos()
+
+        // Efectos: subir volumen
+        } else if (posicion.x() == 8 && posicion.y() == 2) {
+          configuracionAudio.subirEfectos()
+
+        // Cerrar pausa mediante el botón dibujado
+        } else if (posicion.x() == 0 && posicion.y() == 0) {
+          estadoPantalla.cerrarPausa()
+
+        // Botón Atrás
+        } else if (
+          posicion.x() >= 4 &&
+          posicion.x() <= 5 &&
+          posicion.y() == 0
+        ) {
+          estadoPantalla.cerrarPausa()
+
+        // Botón Salir: mostrar confirmación
+        } else if (
+          posicion.x() >= 7 &&
+          posicion.x() <= 8 &&
+          posicion.y() == 0
+        ) {
+          estadoPantalla.mostrarConfirmacion()
+        }
+
+      // Abrir pausa mediante el botón dibujado
+      } else if (posicion.x() == 0 && posicion.y() == 0) {
+        estadoPantalla.abrirPausa()
+
+      } else {
+
+        // Selección y plantación de Chads
+        seleccion.habilitarSeleccion(posicion)
+
+        if (posicion == cartel.position()) {
+          cartel.actuar()
+        }
+        if (posicion == laPala.position()) {
+        laPala.seleccionarPala()
+        }
+      }
+    }
+  })
+
+  // Atajo de teclado para pausar y reanudar
+  keyboard.p().onPressDo({
+    if (
+      estadoPantalla.partidaIniciada() &&
+      !estadoPantalla.estaEnConfirmacion()
+    ) {
+      if (estadoPantalla.estaPausada()) {
+        estadoPantalla.cerrarPausa()
+      } else {
+        estadoPantalla.abrirPausa()
+      }
+    }
+  })
+  // Si presionas la J, un foxy te viene a atacar sin ninguna razon aparente
+  keyboard.j().onPressDo { 
+    elFoxyQueNoInvitoNadie.jumpscare() 
+  }
+  game.onTick(1000, "Pasar Segundo", {
+        spawnerDeNormies.pasarSegundo()
+  })
+  game.start()
+}
