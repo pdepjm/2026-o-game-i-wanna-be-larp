@@ -50,7 +50,7 @@ class ProyectilFuego inherits Proyectil{
 
       
 
-      override method image() = "proyectil_chadlanzador.png"
+      override method image() = "proyectilFuego.png"
 
       override method impactarEn(normie){
 

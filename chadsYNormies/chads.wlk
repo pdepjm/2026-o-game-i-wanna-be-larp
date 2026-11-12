@@ -76,7 +76,7 @@ class ChadMuro inherits Chad {
 
 // Defensor a distancia: busca al enemigo más próximo en su carril y le aplica daño
 class ChadLanzador inherits Chad {
-  const proyectilQueUsa = ProyectilComun
+  const proyectilQueUsa 
   override method image() = "chadprime.png" //nose cual imagen seria
 
   override method actuar() {
@@ -96,6 +96,15 @@ class ChadLanzador inherits Chad {
 
 
 }
+
+class ChadLanzadorFuego inherits ChadLanzador{
+
+  override method image() = "chadFuego.png"
+
+
+}
+
+
 
 // Generador de economía: produce recursos periódicos para costear nuevas unidades
 class ChadOmnisciente inherits Chad {

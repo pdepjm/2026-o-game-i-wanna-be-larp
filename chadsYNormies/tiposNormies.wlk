@@ -10,7 +10,7 @@ object tipoNormieComun{
 
 
 object tipoNormieRapido {
-  method crearEn(pos) = new NormieComun(tiempoQueRecorreUnaCasillaEnMs = 1000,position = pos, vida = 50, danio = 10)
+  method crearEn(pos) = new NormieRapido(tiempoQueRecorreUnaCasillaEnMs = 1000,position = pos, vida = 50, danio = 10)
 }
 
 

@@ -115,8 +115,8 @@ class NormieComun inherits Normie {
 class NormieRapido inherits Normie {
 
   override method image() {
-    if (!estaAtacando) return "normieRapido.png"
-    else return "normieRapidoAttack.png"
+    if (!estaAtacando) return "normieRapido.gif"
+    else return "normieRapido_attack.gif"
   }
 
   override method atacar(chad) {

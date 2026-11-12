@@ -66,7 +66,8 @@ object menuDeCartas{
     const chadsSeleccionados = [
         tipoChadLanzador,
         tipoChadMuro,
-        tipoChadOmnisciente
+        tipoChadOmnisciente,
+        tipoChadFuego
     ]  
 
     //esto es algo de prueba, en caso de querer agregar mas cartas al menu, agregarlas acá

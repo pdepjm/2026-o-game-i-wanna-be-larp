@@ -15,8 +15,19 @@ object tipoChadLanzador {
     method costo() = 100 // <-- 100
     method image() = "chadprime.png"
 
-    method crearEn(pos) = new ChadLanzador(proyectilQueUsa = proyectilFuego, position = pos, vida = 100, vidaMaxima = 100.0)
+    method crearEn(pos) = new ChadLanzador(proyectilQueUsa = proyectilComun, position = pos, vida = 100, vidaMaxima = 100.0)
 }
+
+object tipoChadFuego{
+
+    method costo() = 120
+    method image() = "chadFuego.png"
+
+    method crearEn(pos) = new ChadLanzadorFuego(proyectilQueUsa = proyectilFuego, position = pos,vida = 100, vidaMaxima = 100.0)
+
+}
+
+
 
 object tipoChadOmnisciente {
     method costo() = 50 // <-- 50
